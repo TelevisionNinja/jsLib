@@ -273,7 +273,7 @@ export async function convertAMPSetFetch(urlSet) {
     return newLinks;
 }
 
-const isValidAmpUrlRegex = new RegExp(/^https?:\/\/(\S{1,}\.)?google\.\w{2,}(\/\S{0,})?[^a-zA-Z\s]amp([^.\s]{0,})?$/i);
+const isValidAmpUrlRegex = new RegExp(/^https?:\/\/(\S{1,}\.)?google\.\w{2,}(\/\S{0,})?[^a-zA-Z\s]amp\S{0,}$/i);
 
 /**
  * check if the link is an AMP link
@@ -285,7 +285,7 @@ export function isAMP(url) {
     return isValidAmpUrlRegex.test(url);
 }
 
-const extractAmpUrlsRegex = new RegExp(/\bhttps?:\/\/(\S{1,}\.)?google\.\w{2,}(\/\S{0,})?[^a-zA-Z\s]amp([^.\s]{0,})?\b/ig);
+const extractAmpUrlsRegex = new RegExp(/\bhttps?:\/\/(\S{1,}\.)?google\.\w{2,}(\/\S{0,})?[^a-zA-Z\s]amp\S{0,}\b/ig);
 
 /**
  * 
