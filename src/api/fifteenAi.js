@@ -7,7 +7,13 @@ const queue = new PQueue({
     interval: 1000,
     intervalCap: 50
 });
-const punctuation = ['.', ',', ':', '!', '?'];
+const punctuation = new Set([
+    '.',
+    ',',
+    ':',
+    '!',
+    '?'
+]);
 
 function filterText(text) {
     if (text.length < 5) {
@@ -17,7 +23,7 @@ function filterText(text) {
     let filteredText = cutOff(text.trim(), 200);
     const lastChar = filteredText[filteredText.length - 1];
 
-    if (filteredText.length < 200 && !punctuation.includes(lastChar)) {
+    if (filteredText.length < 200 && !punctuation.has(lastChar)) {
         return `${filteredText}.`;
     }
 

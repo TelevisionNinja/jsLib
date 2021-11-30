@@ -26,7 +26,7 @@ export function replaceHTMLEntities(str) {
  * check for a scheme of 'http' or 'https'
  * check if the top level domain is of 2 or more characters
  */
-const isValidURLRegex = new RegExp(/^https?:\/\/(\S{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?$/i);
+const isValidURLRegex = new RegExp(/^https?:\/\/([^\s\/]{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?$/i);
 
 /**
  * check for a scheme of 'http' or 'https'
@@ -43,7 +43,7 @@ export function isValidURL(str) {
  * check for a scheme of 'http' or 'https'
  * check if the top level domain is of 2 or more characters
  */
-const containsURLRegex = new RegExp(/\bhttps?:\/\/(\S{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?\b/i);
+const containsURLRegex = new RegExp(/\bhttps?:\/\/([^\s\/]{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?\b/i);
 
 /**
  * check for a scheme of 'http' or 'https'
@@ -132,7 +132,7 @@ export function backOffFetch(response, queue) {
     return false;
 }
 
-const extractURLsRegex = new RegExp(/\bhttps?:\/\/(\S{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?\b/ig);
+const extractURLsRegex = new RegExp(/\bhttps?:\/\/([^\s\/]{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?\b/ig);
 
 /**
  * 
@@ -273,7 +273,7 @@ export async function convertAMPSetFetch(urlSet) {
     return newLinks;
 }
 
-const isValidAmpUrlRegex = new RegExp(/^https?:\/\/(\S{1,}\.)?google\.\w{2,}(\/\S{0,})?[^a-zA-Z\s]amp\S{0,}$/i);
+const isValidAmpUrlRegex = new RegExp(/^https?:\/\/((([^\s\/]{1,}[^\w\s\/])?amp\.([^\s\/]{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?)|(([^\s\/]{1,}\.)?\w{1,}\.\w{2,}\/(\S{0,}[^\w\s])?amp\S{0,}))$/i);
 
 /**
  * check if the link is an AMP link
@@ -285,7 +285,7 @@ export function isAMP(url) {
     return isValidAmpUrlRegex.test(url);
 }
 
-const extractAmpUrlsRegex = new RegExp(/\bhttps?:\/\/(\S{1,}\.)?google\.\w{2,}(\/\S{0,})?[^a-zA-Z\s]amp\S{0,}\b/ig);
+const extractAmpUrlsRegex = new RegExp(/\bhttps?:\/\/((([^\s\/]{1,}[^\w\s\/])?amp\.([^\s\/]{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?)|(([^\s\/]{1,}\.)?\w{1,}\.\w{2,}\/(\S{0,}[^\w\s])?amp\S{0,}))\b/ig);
 
 /**
  * 
