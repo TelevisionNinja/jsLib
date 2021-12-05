@@ -839,3 +839,35 @@ export function indexOfAll(str, substr, index = 0, includeOverlap = true) {
 
     return finds;
 }
+
+/**
+ * 
+ * @param {*} tagArr array of tags
+ * @param {*} separator tag separator
+ * @param {*} whitespace whitespace replacement
+ * @returns 
+ */
+export function tagArrToStr(tagArr, separator, whitespace = ' ') {
+    return tagArrToParsedTagArr(tagArr, whitespace).join(encodeURIComponent(separator));
+}
+
+/**
+ * 
+ * @param {*} tagArr array of tags
+ * @param {*} whitespace whitespace replacement
+ * @returns 
+ */
+export function tagArrToParsedTagArr(tagArr, whitespace = ' ') {
+    if (whitespace === ' ') {
+        for (let i = 0, n = tagArr.length; i < n; i++) {
+            tagArr[i] = encodeURIComponent(tagArr[i].trim());
+        }
+    }
+    else {
+        for (let i = 0, n = tagArr.length; i < n; i++) {
+            tagArr[i] = encodeURIComponent(tagArr[i].trim().replaceAll(' ', whitespace));
+        }
+    }
+
+    return tagArr;
+}
