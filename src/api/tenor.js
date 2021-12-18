@@ -6,7 +6,7 @@ const queue = new PQueue({
     interval: 1000,
     intervalCap: 50
 });
-const api = `https://api.tenor.com/v1/random?&limit=1&media_filter=minimal&key=`;
+const api = 'https://api.tenor.com/v1/random?&limit=1&media_filter=minimal&key=';
 
 /**
  * 
