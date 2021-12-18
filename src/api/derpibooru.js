@@ -7,7 +7,7 @@ const queue = new PQueue({
     intervalCap: 50
 });
 
-const URL = 'https://derpibooru.org/api/v1/json/search/images?per_page=1&filter_id=56027&sf=random&key=';
+const api = 'https://derpibooru.org/api/v1/json/search/images?per_page=1&filter_id=56027&sf=random&key=';
 
 /**
  * Returns an image object
@@ -23,7 +23,7 @@ export async function getImage(tagArr, apiKey = '') {
     let imgObj = { results: 0 };
 
     await queue.add(async () => {
-        const response = await fetch(`${URL}${apiKey}&q=${tags}`);
+        const response = await fetch(`${api}${apiKey}&q=${tags}`);
 
         if (backOffFetch(response, queue)) {
             return;
