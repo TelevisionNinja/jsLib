@@ -25,7 +25,7 @@ export function trimChar(str, trimChar) {
         }
     }
 
-    if (!end) {
+    if (end === 0) {
         return '';
     }
 
@@ -91,7 +91,7 @@ export function trimSubstr(str, trimSubstr) {
     const substrLen = trimSubstr.length;
     let end = str.length;
 
-    if (!substrLen || end < substrLen) {
+    if (substrLen === 0 || end < substrLen) {
         return str;
     }
 
@@ -105,13 +105,13 @@ export function trimSubstr(str, trimSubstr) {
             break;
         }
 
-        if (!substrIndex) {
+        if (substrIndex === 0) {
             end = strIndex;
             substrIndex = substrLen;
         }
     }
 
-    if (!end) {
+    if (end === 0) {
         return '';
     }
 
@@ -142,7 +142,7 @@ export function trimSubstrLeft(str, trimSubstr) {
     const substrLen = trimSubstr.length,
         len = str.length;
 
-    if (!substrLen || len < substrLen) {
+    if (substrLen === 0 || len < substrLen) {
         return str;
     }
 
@@ -177,7 +177,7 @@ export function trimSubstrRight(str, trimSubstr) {
     const substrLen = trimSubstr.length;
     let end = str.length;
 
-    if (!substrLen || end < substrLen) {
+    if (substrLen === 0 || end < substrLen) {
         return str;
     }
 
@@ -191,7 +191,7 @@ export function trimSubstrRight(str, trimSubstr) {
             return str.substring(0, end);
         }
 
-        if (!substrIndex) {
+        if (substrIndex === 0) {
             end = strIndex;
             substrIndex = substrLen;
         }
@@ -326,7 +326,7 @@ export function trimCharArr(str, charArr) {
         }
     }
 
-    if (!end) {
+    if (end === 0) {
         return "";
     }
 
@@ -369,7 +369,7 @@ export function trimCharSet(str, charSet) {
         }
     }
 
-    if (!end) {
+    if (end === 0) {
         return '';
     }
 
@@ -435,7 +435,7 @@ export function trimCharSetRight(str, charSet) {
 export function trimSubstrArr(str, substrArr) {
     const substrsLen = substrArr.length;
 
-    if (!substrsLen || !substrArr[substrsLen - 1].length) {
+    if (substrsLen === 0 || substrArr[substrsLen - 1].length === 0) {
         return str;
     }
 
@@ -459,7 +459,7 @@ export function trimSubstrArr(str, substrArr) {
                 }
             }
 
-            if (!substrIndex) {
+            if (substrIndex === 0) {
                 end = strIndex;
                 i = 0;
             }
@@ -472,7 +472,7 @@ export function trimSubstrArr(str, substrArr) {
         }
     }
 
-    if (!end) {
+    if (end === 0) {
         return "";
     }
 
@@ -518,7 +518,7 @@ export function trimSubstrArr(str, substrArr) {
 export function trimSubstrArrLeft(str, substrArr) {
     const substrsLen = substrArr.length;
 
-    if (!substrsLen || !substrArr[substrsLen - 1].length) {
+    if (substrsLen === 0 || substrArr[substrsLen - 1].length === 0) {
         return str;
     }
 
@@ -564,7 +564,7 @@ export function trimSubstrArrLeft(str, substrArr) {
 export function trimSubstrArrRight(str, substrArr) {
     const substrsLen = substrArr.length;
 
-    if (!substrsLen || !substrArr[substrsLen - 1].length) {
+    if (substrsLen === 0 || substrArr[substrsLen - 1].length === 0) {
         return str;
     }
 
@@ -588,7 +588,7 @@ export function trimSubstrArrRight(str, substrArr) {
                 }
             }
 
-            if (!substrIndex) {
+            if (substrIndex === 0) {
                 end = strIndex;
                 i = 0;
             }
@@ -785,7 +785,7 @@ export function indexOfAll(str, substr, index = 0, includeOverlap = true) {
 
     const substrLen = substr.length;
 
-    if (!substrLen) {
+    if (substrLen === 0) {
         finds.push(0);
         return finds;
     }
@@ -802,7 +802,7 @@ export function indexOfAll(str, substr, index = 0, includeOverlap = true) {
             while (j < substrLen) {
                 const compareChar = str[i + j];
 
-                if (!indexSkip && compareChar == firstChar) {
+                if (indexSkip === 0 && compareChar == firstChar) {
                     indexSkip = j;
                 }
 
@@ -810,7 +810,7 @@ export function indexOfAll(str, substr, index = 0, includeOverlap = true) {
                     j++;
                 }
                 else {
-                    if (!indexSkip) {
+                    if (indexSkip === 0) {
                         i += j + 1;
                     }
                     else {
