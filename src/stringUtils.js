@@ -16,10 +16,10 @@ const whitespaceChars = new Set([
  */
 export function trimChar(str, trimChar) {
     let end = str.length;
-    while (end) {
+    while (end !== 0) {
         end--;
 
-        if (str[end] != trimChar) {
+        if (str[end] !== trimChar) {
             end++;
             break;
         }
@@ -49,7 +49,7 @@ export function trimCharLeft(str, trimChar) {
     const len = str.length;
 
     while (start < len) {
-        if (str[start] != trimChar) {
+        if (str[start] !== trimChar) {
             return str.substring(start);
         }
 
@@ -69,10 +69,10 @@ export function trimCharLeft(str, trimChar) {
 export function trimCharRight(str, trimChar) {
     let end = str.length;
 
-    while (end) {
+    while (end !== 0) {
         end--;
 
-        if (str[end] != trimChar) {
+        if (str[end] !== trimChar) {
             return str.substring(0, end + 1);
         }
     }
@@ -97,11 +97,11 @@ export function trimSubstr(str, trimSubstr) {
 
     let strIndex = end,
         substrIndex = substrLen;
-    while (strIndex) {
+    while (strIndex !== 0) {
         strIndex--;
         substrIndex--;
 
-        if (str[strIndex] != trimSubstr[substrIndex]) {
+        if (str[strIndex] !== trimSubstr[substrIndex]) {
             break;
         }
 
@@ -118,11 +118,11 @@ export function trimSubstr(str, trimSubstr) {
     let start = 0;
     strIndex = 0;
     substrIndex = 0;
-    while (str[strIndex] == trimSubstr[substrIndex]) {
+    while (str[strIndex] === trimSubstr[substrIndex]) {
         strIndex++;
         substrIndex++;
 
-        if (substrIndex == substrLen) {
+        if (substrIndex === substrLen) {
             start = strIndex;
             substrIndex = 0;
         }
@@ -150,14 +150,14 @@ export function trimSubstrLeft(str, trimSubstr) {
         strIndex = 0,
         substrIndex = 0;
     while (start < len) {
-        if (str[strIndex] != trimSubstr[substrIndex]) {
+        if (str[strIndex] !== trimSubstr[substrIndex]) {
             return str.substring(start);
         }
 
         strIndex++;
         substrIndex++;
 
-        if (substrIndex == substrLen) {
+        if (substrIndex === substrLen) {
             start = strIndex;
             substrIndex = 0;
         }
@@ -183,11 +183,11 @@ export function trimSubstrRight(str, trimSubstr) {
 
     let strIndex = end,
         substrIndex = substrLen;
-    while (strIndex) {
+    while (strIndex !== 0) {
         strIndex--;
         substrIndex--;
 
-        if (str[strIndex] != trimSubstr[substrIndex]) {
+        if (str[strIndex] !== trimSubstr[substrIndex]) {
             return str.substring(0, end);
         }
 
@@ -265,14 +265,14 @@ export function includesPhrase1(str, phrase, caseSensitive) {
         else if (isSpace) {
             isSpace = false;
 
-            if (i == limit || whitespaceChars.has(str[i + substrLen])) {
+            if (i === limit || whitespaceChars.has(str[i + substrLen])) {
                 let j = 0;
 
-                while (j < substrLen && str[i + j] == phrase[j]) {
+                while (j < substrLen && str[i + j] === phrase[j]) {
                     j++;
                 }
 
-                if (j == substrLen) {
+                if (j === substrLen) {
                     return true;
                 }
             }
@@ -311,16 +311,16 @@ export function trimCharArr(str, charArr) {
     const charsLen = charArr.length;
     end = str.length;
 
-    while (end) {
+    while (end !== 0) {
         end--;
         const current = str[end];
         let i = 0;
 
-        while (i < charsLen && current != charArr[i]) {
+        while (i < charsLen && current !== charArr[i]) {
             i++;
         }
 
-        if (i == charsLen) {
+        if (i === charsLen) {
             end++;
             break;
         }
@@ -336,11 +336,11 @@ export function trimCharArr(str, charArr) {
         const current = str[start];
         let i = 0;
 
-        while (i < charsLen && current != charArr[i]) {
+        while (i < charsLen && current !== charArr[i]) {
             i++;
         }
 
-        if (i == charsLen) {
+        if (i === charsLen) {
             break;
         }
 
@@ -360,7 +360,7 @@ export function trimCharArr(str, charArr) {
 export function trimCharSet(str, charSet) {
     let end = str.length;
 
-    while (end) {
+    while (end !== 0) {
         end--;
  
         if (!charSet.has(str[end])) {
@@ -414,7 +414,7 @@ export function trimCharSetLeft(str, charSet) {
 export function trimCharSetRight(str, charSet) {
     let end = str.length;
 
-    while (end) {
+    while (end !== 0) {
         end--;
 
         if (!charSet.has(str[end])) {
@@ -449,11 +449,11 @@ export function trimSubstrArr(str, substrArr) {
         if (substrIndex <= end) {
             let strIndex = end;
 
-            while (substrIndex) {
+            while (substrIndex !== 0) {
                 strIndex--;
                 substrIndex--;
 
-                if (str[strIndex] != substr[substrIndex]) {
+                if (str[strIndex] !== substr[substrIndex]) {
                     substrIndex++;
                     break;
                 }
@@ -491,11 +491,11 @@ export function trimSubstrArr(str, substrArr) {
             let strIndex = start,
                 substrIndex = 0;
 
-            while (str[strIndex] == substr[substrIndex]) {
+            while (str[strIndex] === substr[substrIndex]) {
                 strIndex++;
                 substrIndex++;
 
-                if (substrIndex == substrLen) {
+                if (substrIndex === substrLen) {
                     start = strIndex;
                     len = end - start;
                     i = 0;
@@ -537,11 +537,11 @@ export function trimSubstrArrLeft(str, substrArr) {
             let strIndex = start,
                 substrIndex = 0;
 
-            while (str[strIndex] == substr[substrIndex]) {
+            while (str[strIndex] === substr[substrIndex]) {
                 strIndex++;
                 substrIndex++;
 
-                if (substrIndex == substrLen) {
+                if (substrIndex === substrLen) {
                     start = strIndex;
                     len = end - start;
                     i = 0;
@@ -578,11 +578,11 @@ export function trimSubstrArrRight(str, substrArr) {
         if (substrIndex <= end) {
             let strIndex = end;
 
-            while (substrIndex) {
+            while (substrIndex !== 0) {
                 strIndex--;
                 substrIndex--;
 
-                if (str[strIndex] != substr[substrIndex]) {
+                if (str[strIndex] !== substr[substrIndex]) {
                     substrIndex++;
                     break;
                 }
@@ -675,7 +675,7 @@ export function cmdLnToArgArr(cmdLn, throwError = true) {
         }
     }
     else {
-        if (len - startOfArg) {
+        if (len - startOfArg !== 0) {
             array.push(cmdLn.substring(startOfArg));
         }
     }
@@ -795,18 +795,18 @@ export function indexOfAll(str, substr, index = 0, includeOverlap = true) {
     const strLen = str.length - substrLen;
 
     while (i <= strLen) {
-        if (str[i] == firstChar) {
+        if (str[i] === firstChar) {
             let j = 1,
                 indexSkip = 0;
 
             while (j < substrLen) {
                 const compareChar = str[i + j];
 
-                if (indexSkip === 0 && compareChar == firstChar) {
+                if (indexSkip === 0 && compareChar === firstChar) {
                     indexSkip = j;
                 }
 
-                if (compareChar == substr[j]) {
+                if (compareChar === substr[j]) {
                     j++;
                 }
                 else {
@@ -821,7 +821,7 @@ export function indexOfAll(str, substr, index = 0, includeOverlap = true) {
                 }
             }
 
-            if (j == substrLen) {
+            if (j === substrLen) {
                 finds.push(i);
 
                 if (includeOverlap) {

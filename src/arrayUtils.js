@@ -9,7 +9,7 @@ export function hasSubArrInOrder(arr, subArr) {
     const subArrLen = subArr.length;
 
     // empty set
-    if (!subArrLen) {
+    if (subArrLen === 0) {
         return true;
     }
 
@@ -25,15 +25,15 @@ export function hasSubArrInOrder(arr, subArr) {
             while (j < subArrLen) {
                 const compareElement = arr[i + j];
 
-                if (!indexSkip && compareElement == firstElement) {
+                if (indexSkip === 0 && compareElement === firstElement) {
                     indexSkip = j;
                 }
 
-                if (compareElement == subArr[j]) {
+                if (compareElement === subArr[j]) {
                     j++;
                 }
                 else {
-                    if (!indexSkip) {
+                    if (indexSkip === 0) {
                         i += j + 1;
                     }
                     else {
@@ -44,7 +44,7 @@ export function hasSubArrInOrder(arr, subArr) {
                 }
             }
 
-            if (j == subArrLen) {
+            if (j === subArrLen) {
                 return true;
             }
         }
@@ -94,11 +94,11 @@ export function hasSubArr2(arr, subArr) {
         const element = subArr[i];
         let j = 0;
 
-        while (j < arrLen && element != arr[j]) {
+        while (j < arrLen && element !== arr[j]) {
             j++;
         }
 
-        if (j == arrLen) {
+        if (j === arrLen) {
             return false;
         }
     }
