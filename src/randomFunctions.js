@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { randomInt } from 'crypto';
 import PQueue from 'p-queue';
-import { backOffFetch } from '../lib/urlUtils.js';
+import { backOffFetch } from './urlUtils.js';
 
 const queue = new PQueue({
     interval: 1000,
