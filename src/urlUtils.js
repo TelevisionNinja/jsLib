@@ -56,6 +56,10 @@ export function containsURL(str) {
     return containsURLRegex.test(str);
 }
 
+const errorCodes = new Set([
+    429
+]);
+
 /**
  * back off using axios and p-queue
  * 
@@ -66,7 +70,7 @@ export function containsURL(str) {
 export function backOffAxios(error, queue) {
     const errorCode = error.response.status;
 
-    if ((errorCode === 429 || errorCode >= 500) && !queue.isPaused) {
+    if ((errorCodes.has(errorCode) || errorCode >= 500) && !queue.isPaused) {
         queue.pause();
 
         const retryTime = error.response.headers['retry-after'];
@@ -104,7 +108,7 @@ export function backOffAxios(error, queue) {
 export function backOffFetch(response, queue) {
     const errorCode = response.status;
 
-    if ((errorCode === 429 || errorCode >= 500) && !queue.isPaused) {
+    if ((errorCodes.has(errorCode) || errorCode >= 500) && !queue.isPaused) {
         queue.pause();
 
         const retryTime = response.headers.get('retry-after');
