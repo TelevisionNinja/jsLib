@@ -774,7 +774,7 @@ export function alternateStrings(str1, str2) {
  * @param {*} substr 
  * @param {*} index starting index
  * @param {*} includeOverlap 
- * @returns index of the substring, returns an empty vector if not found
+ * @returns array of indices of the substring, returns an empty array if not found
  */
 export function indexOfAll(str, substr, index = 0, includeOverlap = true) {
     let finds = [];
