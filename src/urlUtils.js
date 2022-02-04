@@ -253,7 +253,6 @@ export async function convertAMPSetAxios(urlSet) {
  */
 export async function convertAMPSetFetch(urlSet) {
     let newLinks = [];
-
     const urlArray = [...urlSet];
     let responses = [];
     const n = urlSet.size;
@@ -262,14 +261,25 @@ export async function convertAMPSetFetch(urlSet) {
         responses.push(queue.add(() => fetch(urlArray[i])));
     }
 
+    responses = await Promise.allSettled(responses);
+
     for (let i = 0; i < n; i++) {
-        const response = await responses[i];
+        const response = responses[i].value;
 
         if (!backOffFetch(response, queue)) {
-            const url = response.url;
+            let newURL = response.url;
+            let oldURL = urlArray[i];
 
-            if (url !== urlArray[i]) {
-                newLinks.push(url);
+            if (oldURL[oldURL.length - 1] === '/') {
+                oldURL = oldURL.substring(0, oldURL.length - 1);
+            }
+
+            if (newURL[newURL.length - 1] === '/') {
+                newURL = newURL.substring(0, newURL.length - 1);
+            }
+
+            if (newURL !== oldURL) {
+                newLinks.push(newURL);
             }
         }
     }
