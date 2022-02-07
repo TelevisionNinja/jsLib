@@ -316,11 +316,11 @@ export function extractAmpUrls(str) {
  * @param {*} str 
  * @returns array of non-AMP links
  */
-export async function extractAndConvertAmpLinksAxios(str) {
+export function extractAndConvertAmpLinksAxios(str) {
     const linkSet = extractAmpUrls(str);
 
     if (linkSet.size) {
-        return [...(await convertAMPSetAxios(linkSet))];
+        return convertAMPSetAxios(linkSet);
     }
 
     return [];
@@ -331,11 +331,11 @@ export async function extractAndConvertAmpLinksAxios(str) {
  * @param {*} str 
  * @returns array of non-AMP links
  */
-export async function extractAndConvertAmpLinksFetch(str) {
+export function extractAndConvertAmpLinksFetch(str) {
     const linkSet = extractAmpUrls(str);
 
     if (linkSet.size) {
-        return [...(await convertAMPSetFetch(linkSet))];
+        return convertAMPSetFetch(linkSet);
     }
 
     return [];
