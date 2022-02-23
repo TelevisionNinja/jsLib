@@ -207,6 +207,8 @@ export async function convertAMPFetch(url) {
     return newLink;
 }
 
+const googleRedirct = 'https://www.google.com/url?q=';
+
 /**
  * 
  * @param {*} urlSet set of AMP URL's
@@ -230,10 +232,23 @@ export async function convertAMPSetAxios(urlSet) {
             const response = responses[i];
 
             if (response.status === 'fulfilled') {
-                const url = response.value.request.res.responseUrl;
+                let newURL = response.value.request.res.responseUrl;
+                let oldURL = urlArray[i];
 
-                if (url !== urlArray[i]) {
-                    newLinks.push(url);
+                if (newURL.startsWith(googleRedirct)) {
+                    newURL = newURL.substring(googleRedirct.length);
+                }
+
+                if (oldURL[oldURL.length - 1] === '/') {
+                    oldURL = oldURL.substring(0, oldURL.length - 1);
+                }
+
+                if (newURL[newURL.length - 1] === '/') {
+                    newURL = newURL.substring(0, newURL.length - 1);
+                }
+
+                if (newURL !== oldURL) {
+                    newLinks.push(newURL);
                 }
             }
         }
@@ -269,6 +284,10 @@ export async function convertAMPSetFetch(urlSet) {
         if (!backOffFetch(response, queue)) {
             let newURL = response.url;
             let oldURL = urlArray[i];
+
+            if (newURL.startsWith(googleRedirct)) {
+                newURL = newURL.substring(googleRedirct.length);
+            }
 
             if (oldURL[oldURL.length - 1] === '/') {
                 oldURL = oldURL.substring(0, oldURL.length - 1);
