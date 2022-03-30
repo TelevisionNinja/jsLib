@@ -20,7 +20,7 @@ function filterText(text) {
         throw 'text too short';
     }
 
-    let filteredText = cutOff(text.trim(), 200);
+    const filteredText = cutOff(text.trim(), 200);
     const lastChar = filteredText[filteredText.length - 1];
 
     if (filteredText.length < 200 && !punctuation.has(lastChar)) {
@@ -87,6 +87,10 @@ export async function getTtsUrl(character, text, emotion = 'Contextual') {
  */
 export async function getTtsBuffer(url) {
     let buffer = undefined;
+
+    if (!url.length) {
+        return buffer;
+    }
 
     await queue.add(async () => {
         //----------------------------
