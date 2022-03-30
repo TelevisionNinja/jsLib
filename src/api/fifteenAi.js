@@ -68,7 +68,7 @@ export async function getTtsUrl(character, text, emotion = 'Contextual') {
         const body = await response.json();
 
         // if the post request errors, a message is returned
-        if (body.message) {
+        if (typeof body.message !== 'undefined') {
             return;
         }
 
