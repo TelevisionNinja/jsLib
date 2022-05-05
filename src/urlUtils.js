@@ -273,16 +273,23 @@ export async function convertAMPSetFetch(urlSet) {
     const n = urlSet.size;
 
     for (let i = 0; i < n; i++) {
-        responses.push(queue.add(() => fetch(urlArray[i])));
+        responses.push(queue.add(async () => {
+            const response = await fetch(urlArray[i]);
+
+            if (backOffFetch(response, queue)) {
+                return '';
+            }
+
+            return response.url;
+        }));
     }
 
     responses = await Promise.allSettled(responses);
 
     for (let i = 0; i < n; i++) {
-        const response = responses[i].value;
+        let newURL = responses[i].value;
 
-        if (!backOffFetch(response, queue)) {
-            let newURL = response.url;
+        if (newURL.length !== 0) {
             let oldURL = urlArray[i];
 
             if (newURL.startsWith(googleRedirct)) {
