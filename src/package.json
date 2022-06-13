@@ -2,7 +2,8 @@
   "name": "jslib",
   "version": "1.0.0",
   "description": "A collection of some javascript functions",
-  "main": "arrayUtils.js",
+  "main": "",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,7 +19,7 @@
   "homepage": "https://github.com/TelevisionNinja/jsLib#readme",
   "dependencies": {
     "axios": "^0.27.2",
-    "node-fetch": "^3.0.0",
-    "p-queue": "^7.1.0"
+    "node-fetch": "^3.2.6",
+    "p-queue": "^7.2.0"
   }
 }
