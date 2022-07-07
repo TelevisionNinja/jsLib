@@ -209,7 +209,7 @@ export async function convertAMPFetch(url) {
 
 const ampSubdomain = 'amp.';
 const googleRedirct = 'https://www.google.com/url?q=';
-const googleAMPPath = 'https://www.google.com/amp/s';
+const googleAMPPath = 'https://www.google.com/amp/s/';
 const ampDetectRegex = new RegExp(/([^\w\s])amp([^\w\s]|\b)/i);
 
 /**
@@ -267,18 +267,15 @@ export async function convertAMPSetAxios(urlSet) {
 /**
  * construct a non-amp url
  * 
- * @param {*} startOfPath 
- * @param {*} partialURL 
+ * @param {*} oldPath 
  * @param {*} oldDomain 
  * @param {*} oldURL 
  * @param {*} newURL 
  * @returns 
  */
-async function makeNewNonAMPURL(startOfPath, partialURL, oldDomain, oldURL, newURL) {
-    const path = partialURL.substring(startOfPath);
-
-    if (oldDomain.startsWith(ampSubdomain) && !ampDetectRegex.test(path)) {
-        const response = await fetch(`https://${oldURL.substring(googleAMPPath.length + 1 + ampSubdomain.length)}`);
+async function makeNewNonAMPURL(oldPath, oldDomain, oldURL, newURL) {
+    if (oldDomain.startsWith(ampSubdomain) && !ampDetectRegex.test(oldPath)) {
+        const response = await fetch(`https://${oldURL.substring(googleAMPPath.length + ampSubdomain.length)}`);
 
         if (!backOffFetch(response, queue) && response.ok) {
             return response.url;
@@ -324,23 +321,14 @@ export async function convertAMPSetFetch(urlSet) {
                 newURL = newURL.substring(googleRedirct.length);
             }
             else {
-                const partialURL = oldURL.substring(googleAMPPath.length + 1);
+                const partialURL = oldURL.substring(googleAMPPath.length);
                 const startOfPath = partialURL.indexOf('/');
+                const oldPath = partialURL.substring(startOfPath);
                 const oldDomain = partialURL.substring(0, startOfPath);
                 const newDomain = extractDomain(newURL);
-                const oldDomainParts = oldDomain.split('.');
-                const newDomainParts = newDomain.split('.');
 
-                if (oldDomainParts.length !== newDomainParts.length) {
-                    newURL = makeNewNonAMPURL(startOfPath, partialURL, oldDomain, oldURL, newURL);
-                }
-                else {
-                    for (let j = oldDomainParts.length - 1; j >= 0; j--) {
-                        if (oldDomainParts[j] !== newDomainParts[j]) {
-                            newURL = makeNewNonAMPURL(startOfPath, partialURL, oldDomain, oldURL, newURL);
-                            break;
-                        }
-                    }
+                if (oldDomain !== newDomain) {
+                    newURL = makeNewNonAMPURL(oldPath, oldDomain, oldURL, newURL);
                 }
             }
 
