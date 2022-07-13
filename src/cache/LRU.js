@@ -52,6 +52,7 @@ export class Cache {
 
     delete(key) {
         const node = this.#keys.get(key);
+
         return this.#deleteNode(node);
     }
 

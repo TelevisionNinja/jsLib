@@ -148,6 +148,11 @@ export class DoublyLinkedList {
         return deleteNode(currentNode);
     }
 
+    /**
+     * 
+     * @param {*} separator default is "\n"
+     * @returns string
+     */
     toString(separator = '\n') {
         let str = '';
         let node = this.head;
@@ -173,16 +178,7 @@ export class DoublyLinkedList {
      * @returns boolean
      */
     deleteHead() {
-        if (this.head === null) {
-            return false;
-        }
-
-        this.head = this.head.next;
-        this.head.previous = null;
-
-        this.length--;
-        // delete detached head;
-        return true;
+        return deleteNode(this.head);
     }
 
     /**
@@ -190,22 +186,13 @@ export class DoublyLinkedList {
      * @returns boolean
      */
     deleteTail() {
-        if (this.tail === null) {
-            return false;
-        }
-
-        this.tail = this.tail.previous;
-        this.tail.next = null;
-
-        this.length--;
-        // delete detached tail;
-        return true;
+        return deleteNode(this.tail);
     }
 
     /**
      * 
      * @param {Node} node 
-     * @returns 
+     * @returns boolean
      */
     deleteNode(node) {
         // check if the value was found
