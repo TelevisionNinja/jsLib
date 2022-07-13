@@ -15,64 +15,64 @@ export class Cache {
     /**
      * resets the entry's timeout time
      * 
-     * @param {*} id 
+     * @param {*} key 
      * @param {*} entry 
      */
-    #cacheHit(id, entry) {
+    #cacheHit(key, entry) {
         clearTimeout(entry.timeoutID);
-        entry.timeoutID = setTimeout(() => cache.delete(id), expiryTime);
+        entry.timeoutID = setTimeout(() => cache.delete(key), expiryTime);
     }
 
     /**
      * updates the entry's data with new data
      * 
-     * @param {*} id 
+     * @param {*} key 
      * @param {*} entry 
      * @param {*} data 
      */
-    #replaceEntryData(id, entry, data) {
-        this.#cacheHit(id, entry);
+    #replaceEntryData(key, entry, data) {
+        this.#cacheHit(key, entry);
         entry.data = data;
     }
 
     /**
      * check if the id is in the cache
      * 
-     * @param {*} id 
+     * @param {*} key 
      * @returns bool
      */
-    has(id) {
-        return cache.has(id);
+    has(key) {
+        return cache.has(key);
     }
 
     /**
      * removes the entry
      * 
-     * @param {*} id 
+     * @param {*} key 
      */
-    remove(id) {
-        const entry = cache.get(id);
+    remove(key) {
+        const entry = cache.get(key);
 
         if (typeof entry !== 'undefined') {
             clearTimeout(entry.timeoutID);
-            cache.delete(id);
+            cache.delete(key);
         }
     }
 
     /**
      * returns the data for the id
      * 
-     * @param {*} id 
+     * @param {*} key 
      * @returns cached item
      */
-    get(id) {
-        const entry = cache.get(id);
+    get(key) {
+        const entry = cache.get(key);
 
         if (typeof entry === 'undefined') {
             return null;
         }
 
-        this.#cacheHit(id, entry);
+        this.#cacheHit(key, entry);
         //cache.set(id, element);
 
         return entry.data;
@@ -81,27 +81,27 @@ export class Cache {
     /**
      * this does not reset the timeout for the id if there is an existing entry
      * 
-     * @param {*} id 
+     * @param {*} key 
      * @param {*} data 
      */
-    insert(id, data) {
-        cache.set(id, {
+    insert(key, data) {
+        cache.set(key, {
             data: data,
-            timeoutID: setTimeout(() => cache.delete(id), expiryTime)
+            timeoutID: setTimeout(() => cache.delete(key), expiryTime)
         });
     }
 
     /**
      * replaces the data for the id
      * 
-     * @param {*} id 
+     * @param {*} key 
      * @param {*} data 
      */
-    replace(id, data) {
-        const entry = cache.get(id);
+    replace(key, data) {
+        const entry = cache.get(key);
 
         if (typeof entry !== 'undefined') {
-            this.#replaceEntryData(id, entry, data);
+            this.#replaceEntryData(key, entry, data);
             //cache.set(id, element);
         }
     }
@@ -109,17 +109,17 @@ export class Cache {
     /**
      * replaces the data for the id if there is an existing entry
      * 
-     * @param {*} id 
+     * @param {*} key 
      * @param {*} data 
      */
-    upsert(id, data) {
-        const entry = cache.get(id);
+    upsert(key, data) {
+        const entry = cache.get(key);
 
         if (typeof entry === 'undefined') {
-            insert(id, data);
+            insert(key, data);
         }
         else {
-            this.#replaceEntryData(id, entry, data);
+            this.#replaceEntryData(key, entry, data);
             //cache.set(id, element);
         }
     }
