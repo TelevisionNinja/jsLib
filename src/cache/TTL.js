@@ -1,14 +1,14 @@
 export class Cache {
     #cache = new Map();
+    #ttl = 1000 * 60; // time to live, 1 min default
 
     /**
      * 
-     * @param {Number} TTL this is in milliseconds, default of 1 minute
+     * @param {Number} ttl this is in milliseconds, default of 1 minute
      */
-    constructor(TTL = null) {
-        // 1 min default
-        if (TTL === null || TTL === undefined) {
-            this.expiryTime = 1000 * 60;
+    constructor(ttl = null) {
+        if (ttl !== null && ttl !== undefined) {
+            this.#ttl = ttl;
         }
     }
 
@@ -20,7 +20,7 @@ export class Cache {
      */
     #cacheHit(key, entry) {
         clearTimeout(entry.timeoutID);
-        entry.timeoutID = setTimeout(() => this.#cache.delete(key), expiryTime);
+        entry.timeoutID = setTimeout(() => this.#cache.delete(key), this.#ttl);
     }
 
     /**
@@ -79,7 +79,7 @@ export class Cache {
         if (typeof entry === 'undefined') {
             this.#cache.set(key, {
                 data: data,
-                timeoutID: setTimeout(() => this.#cache.delete(key), expiryTime)
+                timeoutID: setTimeout(() => this.#cache.delete(key), this.#ttl)
             });
         }
         else {
@@ -90,5 +90,9 @@ export class Cache {
 
     get size() {
         return this.#cache.size;
+    }
+
+    get ttl() {
+        return this.#ttl;
     }
 }
