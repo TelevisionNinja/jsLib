@@ -1,4 +1,4 @@
-class listNode {
+class ListNode {
     constructor(value, nextNode, previousNode) {
         this.value = value;
         this.next = nextNode;
@@ -18,14 +18,14 @@ export class DoublyLinkedList {
      * @param {DoublyLinkedList} list 
      */
     copyConstructor(list) {
-        let copy = new listNode(null, null, null);
+        let copy = new ListNode(null, null, null);
         this.head = copy;
 
         // iterate through the list to copy the nodes
         let currentNode = list.head;
 
         while (currentNode !== null) {
-            copy.next = new listNode(currentNode.value, null, null);
+            copy.next = new ListNode(currentNode.value, null, null);
             copy = copy.next;
             this.tail = copy;
             currentNode = currentNode.next;
@@ -36,11 +36,11 @@ export class DoublyLinkedList {
         // clean up the first node
         copy = this.head;
         this.head = copy.next;
-        // delete copy
+        // delete copy;
     }
 
     insertHead(value) {
-        const newNode = new listNode(value, this.head, null);
+        const newNode = new ListNode(value, this.head, null);
 
         if (this.head === null) {
             this.tail = newNode;
@@ -54,7 +54,7 @@ export class DoublyLinkedList {
     }
 
     insertTail(value) {
-        const newNode = new listNode(value, null, this.tail);
+        const newNode = new ListNode(value, null, this.tail);
 
         if (this.tail === null) {
             this.head = newNode;
@@ -68,7 +68,7 @@ export class DoublyLinkedList {
     }
 
     sortedInsert(value) {
-        const newNode = new listNode(value, null, null);
+        const newNode = new ListNode(value, null, null);
 
         // insert into empty list
         if (this.head === null) {
@@ -136,6 +136,7 @@ export class DoublyLinkedList {
     }
 
     /**
+     * finds and deletes a value in the list
      * 
      * @param {*} value 
      * @returns boolean
@@ -144,30 +145,7 @@ export class DoublyLinkedList {
         // linear search
         const currentNode = this.#search(value);
 
-        // check if the value was found
-        if (currentNode === null) {
-            return false;
-        }
-
-        // connect the previous node to the next node
-        if (currentNode === this.head) {
-            this.head = currentNode.next;
-        }
-        else {
-            currentNode.previous.next = currentNode.next;
-        }
-
-        // connect the next node to the previous node
-        if (currentNode === this.tail) {
-            this.tail = currentNode.previous;
-        }
-        else {
-            currentNode.next.previous = currentNode.previous;
-        }
-
-        this.length--;
-        // delete currentNode
-        return true;
+        return deleteNode(currentNode);
     }
 
     toString(separator = '\n') {
@@ -188,5 +166,71 @@ export class DoublyLinkedList {
 
     get length() {
         return this.length;
+    }
+
+    /**
+     * 
+     * @returns boolean
+     */
+    deleteHead() {
+        if (this.head === null) {
+            return false;
+        }
+
+        this.head = this.head.next;
+        this.head.previous = null;
+
+        this.length--;
+        // delete detached head;
+        return true;
+    }
+
+    /**
+     * 
+     * @returns boolean
+     */
+    deleteTail() {
+        if (this.tail === null) {
+            return false;
+        }
+
+        this.tail = this.tail.previous;
+        this.tail.next = null;
+
+        this.length--;
+        // delete detached tail;
+        return true;
+    }
+
+    /**
+     * 
+     * @param {ListNode} node 
+     * @returns 
+     */
+    deleteNode(node) {
+        // check if the value was found
+        if (node === null) {
+            return false;
+        }
+
+        // connect the previous node to the next node
+        if (node === this.head) {
+            this.head = node.next;
+        }
+        else {
+            node.previous.next = node.next;
+        }
+
+        // connect the next node to the previous node
+        if (node === this.tail) {
+            this.tail = node.previous;
+        }
+        else {
+            node.next.previous = node.previous;
+        }
+
+        this.length--;
+        // delete detached node;
+        return true;
     }
 }
