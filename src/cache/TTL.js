@@ -123,4 +123,8 @@ export class Cache {
             //this.#cache.set(id, element);
         }
     }
+
+    get size() {
+        return this.#cache.size;
+    }
 }
