@@ -1,4 +1,4 @@
-class ListNode {
+class Node {
     constructor(value, nextNode, previousNode) {
         this.value = value;
         this.next = nextNode;
@@ -18,14 +18,14 @@ export class DoublyLinkedList {
      * @param {DoublyLinkedList} list 
      */
     copyConstructor(list) {
-        let copy = new ListNode(null, null, null);
+        let copy = new Node(null, null, null);
         this.head = copy;
 
         // iterate through the list to copy the nodes
         let currentNode = list.head;
 
         while (currentNode !== null) {
-            copy.next = new ListNode(currentNode.value, null, null);
+            copy.next = new Node(currentNode.value, null, null);
             copy = copy.next;
             this.tail = copy;
             currentNode = currentNode.next;
@@ -40,7 +40,7 @@ export class DoublyLinkedList {
     }
 
     insertHead(value) {
-        const newNode = new ListNode(value, this.head, null);
+        const newNode = new Node(value, this.head, null);
 
         if (this.head === null) {
             this.tail = newNode;
@@ -54,7 +54,7 @@ export class DoublyLinkedList {
     }
 
     insertTail(value) {
-        const newNode = new ListNode(value, null, this.tail);
+        const newNode = new Node(value, null, this.tail);
 
         if (this.tail === null) {
             this.head = newNode;
@@ -68,7 +68,7 @@ export class DoublyLinkedList {
     }
 
     sortedInsert(value) {
-        const newNode = new ListNode(value, null, null);
+        const newNode = new Node(value, null, null);
 
         // insert into empty list
         if (this.head === null) {
@@ -204,7 +204,7 @@ export class DoublyLinkedList {
 
     /**
      * 
-     * @param {ListNode} node 
+     * @param {Node} node 
      * @returns 
      */
     deleteNode(node) {
