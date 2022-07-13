@@ -1,13 +1,13 @@
 export class Cache {
+    #cache = new Map();
+
     /**
      * 
      * @param {Number} TTL this is in milliseconds, default of 1 minute
      */
     constructor(TTL = null) {
-        this.cache = new Map();
-
         // 1 min default
-        if (TTL === null) {
+        if (TTL === null || TTL === undefined) {
             this.expiryTime = 1000 * 60;
         }
     }
@@ -20,7 +20,7 @@ export class Cache {
      */
     #cacheHit(key, entry) {
         clearTimeout(entry.timeoutID);
-        entry.timeoutID = setTimeout(() => cache.delete(key), expiryTime);
+        entry.timeoutID = setTimeout(() => this.#cache.delete(key), expiryTime);
     }
 
     /**
@@ -42,7 +42,7 @@ export class Cache {
      * @returns bool
      */
     has(key) {
-        return cache.has(key);
+        return this.#cache.has(key);
     }
 
     /**
@@ -51,11 +51,11 @@ export class Cache {
      * @param {*} key 
      */
     remove(key) {
-        const entry = cache.get(key);
+        const entry = this.#cache.get(key);
 
         if (typeof entry !== 'undefined') {
             clearTimeout(entry.timeoutID);
-            cache.delete(key);
+            this.#cache.delete(key);
         }
     }
 
@@ -66,14 +66,14 @@ export class Cache {
      * @returns cached item
      */
     get(key) {
-        const entry = cache.get(key);
+        const entry = this.#cache.get(key);
 
         if (typeof entry === 'undefined') {
             return null;
         }
 
         this.#cacheHit(key, entry);
-        //cache.set(id, element);
+        //this.#cache.set(id, element);
 
         return entry.data;
     }
@@ -85,9 +85,9 @@ export class Cache {
      * @param {*} data 
      */
     insert(key, data) {
-        cache.set(key, {
+        this.#cache.set(key, {
             data: data,
-            timeoutID: setTimeout(() => cache.delete(key), expiryTime)
+            timeoutID: setTimeout(() => this.#cache.delete(key), expiryTime)
         });
     }
 
@@ -98,11 +98,11 @@ export class Cache {
      * @param {*} data 
      */
     replace(key, data) {
-        const entry = cache.get(key);
+        const entry = this.#cache.get(key);
 
         if (typeof entry !== 'undefined') {
             this.#replaceEntryData(key, entry, data);
-            //cache.set(id, element);
+            //this.#cache.set(id, element);
         }
     }
 
@@ -113,14 +113,14 @@ export class Cache {
      * @param {*} data 
      */
     upsert(key, data) {
-        const entry = cache.get(key);
+        const entry = this.#cache.get(key);
 
         if (typeof entry === 'undefined') {
             insert(key, data);
         }
         else {
             this.#replaceEntryData(key, entry, data);
-            //cache.set(id, element);
+            //this.#cache.set(id, element);
         }
     }
 }
