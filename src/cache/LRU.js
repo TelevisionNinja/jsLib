@@ -1,11 +1,11 @@
 // least recently used cache
 
 class Node {
-    constructor(key, value, nextNode, previousNode) {
+    constructor(key, value) {
         this.key = key;
         this.value = value;
-        this.next = nextNode;
-        this.previous = previousNode;
+        this.next = null;
+        this.previous = null;
     }
 }
 
@@ -38,10 +38,10 @@ export class Cache {
         if (typeof node === 'undefined') {
             if (this.#nodeMap.size === this.#limit) {
                 this.#nodeMap.delete(this.#tail.key);
-                this.#deleteNode(this.#tail);
+                this.#deleteTail();
             }
 
-            node = new Node(key, value, null, null);
+            node = new Node(key, value);
             this.#nodeMap.set(key, node);
         }
         else {
@@ -55,7 +55,10 @@ export class Cache {
     delete(key) {
         const node = this.#nodeMap.get(key);
 
-        return this.#deleteNode(node);
+        if (typeof node !== 'undefined') {
+            this.#nodeMap.delete(key);
+            this.#deleteNode(node);
+        }
     }
 
     has(key) {
@@ -80,17 +83,22 @@ export class Cache {
         this.#head = node;
     }
 
+    #deleteTail() {
+        if (this.#tail === this.#head) {
+            this.#head = null;
+            this.#tail = null;
+        }
+        else {
+            this.#tail = this.#tail.previous;
+            this.#tail.next = null;
+        }
+    }
+
     /**
      * 
      * @param {Node} node 
-     * @returns 
      */
     #deleteNode(node) {
-        // check if the value was found
-        if (node === null) {
-            return;
-        }
-
         // connect the previous node to the next node
         if (node === this.#head) {
             this.#head = node.next;
