@@ -1,3 +1,5 @@
+// time to live cache
+
 export class Cache {
     #cache = new Map();
     #ttl = 1000 * 60; // time to live, 1 min default
