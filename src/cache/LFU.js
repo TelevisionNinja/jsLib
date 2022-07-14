@@ -62,7 +62,8 @@ export class Cache {
         this.#minimumFrequency = 0;
 
         // Add the key to the frequency list
-        const newHead = this.#insertHead(new Node(key, value, this.#minimumFrequency, null, null));
+        const newHead = new Node(key, value, this.#minimumFrequency, null, null);
+        this.#insertHead(newHead);
 
         // Create a new node
         this.#nodeMap.set(key, newHead);
@@ -95,7 +96,6 @@ export class Cache {
     /**
      * 
      * @param {Node} node 
-     * @returns node
      */
     #insertHead(node) {
         let list = this.#frequencyMap.get(node.frequency);
@@ -107,6 +107,6 @@ export class Cache {
         }
 
         // insert the key into the front of the new frequency list
-        return list.insertHeadNode(node);
+        list.insertHeadNode(node);
     }
 }
