@@ -7,10 +7,11 @@ class Node {
 }
 
 export class DoublyLinkedList {
+    #length = 0;
+
     constructor() {
         this.head = null;
         this.tail = null;
-        this.length = 0;
     }
 
     /**
@@ -30,7 +31,7 @@ export class DoublyLinkedList {
             this.tail = copy;
             currentNode = currentNode.next;
 
-            // this.length++; // if the list does not have a length variable
+            // this.#length++; // if the list does not have a length variable
         }
 
         // clean up the first node
@@ -38,7 +39,7 @@ export class DoublyLinkedList {
         this.head = copy.next;
         // delete copy; or GC
 
-        this.length = list.length;
+        this.#length = list.length;
     }
 
     insertHead(value) {
@@ -64,7 +65,7 @@ export class DoublyLinkedList {
         }
 
         this.head = node;
-        this.length++;
+        this.#length++;
 
         return this.head;
     }
@@ -87,7 +88,7 @@ export class DoublyLinkedList {
         }
 
         this.tail = node;
-        this.length++;
+        this.#length++;
 
         return this.tail;
     }
@@ -131,7 +132,7 @@ export class DoublyLinkedList {
             currentNode.previous = newNode;
         }
 
-        this.length++;
+        this.#length++;
 
         return newNode;
     }
@@ -197,7 +198,7 @@ export class DoublyLinkedList {
     }
 
     get length() {
-        return this.length;
+        return this.#length;
     }
 
     /**
@@ -243,7 +244,7 @@ export class DoublyLinkedList {
             node.next.previous = node.previous;
         }
 
-        this.length--;
+        this.#length--;
         // delete detached node; or GC
         return true;
     }
@@ -258,6 +259,6 @@ export class DoublyLinkedList {
 
         this.head = null;
         this.tail = null;
-        this.length = 0;
+        this.#length = 0;
     }
 }
