@@ -44,29 +44,52 @@ export class DoublyLinkedList {
     insertHead(value) {
         const newNode = new Node(value, this.head, null);
 
+        return insertHeadNode(newNode);
+    }
+
+    /**
+     * 
+     * @param {Node} node 
+     * @returns 
+     */
+    insertHeadNode(node) {
+        node.next = this.head;
+        node.previous = null;
+
         if (this.head === null) {
-            this.tail = newNode;
+            this.tail = node;
         }
         else {
-            this.head.previous = newNode;
+            this.head.previous = node;
         }
 
-        this.head = newNode;
+        this.head = node;
         this.length++;
+
+        return this.head;
     }
 
     insertTail(value) {
         const newNode = new Node(value, null, this.tail);
 
+        return insertTailNode(newNode);
+    }
+
+    insertTailNode(node) {
+        node.next = null
+        node.previous = this.tail;
+
         if (this.tail === null) {
-            this.head = newNode;
+            this.head = node;
         }
         else {
-            this.tail.next = newNode;
+            this.tail.next = node;
         }
 
-        this.tail = newNode;
+        this.tail = node;
         this.length++;
+
+        return this.tail;
     }
 
     sortedInsert(value) {
@@ -109,6 +132,8 @@ export class DoublyLinkedList {
         }
 
         this.length++;
+
+        return newNode;
     }
 
     /**
@@ -117,7 +142,7 @@ export class DoublyLinkedList {
      * @param {*} value 
      * @returns 
      */
-    #search(value) {
+    searchNode(value) {
         let currentNode = this.head;
 
         while (currentNode !== null && currentNode.value !== value) {
@@ -133,8 +158,8 @@ export class DoublyLinkedList {
      * @param {*} value 
      * @returns boolean
      */
-    search(value) {
-        return this.#search(value) !== null;
+    searchValue(value) {
+        return this.searchNode(value) !== null;
     }
 
     /**
@@ -145,7 +170,7 @@ export class DoublyLinkedList {
      */
     delete(value) {
         // linear search
-        const currentNode = this.#search(value);
+        const currentNode = this.searchNode(value);
 
         return deleteNode(currentNode);
     }
