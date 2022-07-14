@@ -11,7 +11,7 @@ class Node {
 
 export class Cache {
     #limit;
-    #keys = new Map();
+    #nodeMap = new Map();
     #tail = null;
     #head = null;
 
@@ -20,7 +20,7 @@ export class Cache {
     }
 
     get(key) {
-        const node = this.#keys.get(key);
+        const node = this.#nodeMap.get(key);
 
         if (typeof node === 'undefined') {
             return null;
@@ -33,16 +33,16 @@ export class Cache {
     }
 
     set(key, value) {
-        let node = this.#keys.get(key);
+        let node = this.#nodeMap.get(key);
 
         if (typeof node === 'undefined') {
-            if (this.#keys.size === this.#limit) {
-                this.#keys.delete(this.#tail.key);
+            if (this.#nodeMap.size === this.#limit) {
+                this.#nodeMap.delete(this.#tail.key);
                 this.#deleteNode(this.#tail);
             }
 
             node = new Node(key, value, null, null);
-            this.#keys.set(key, node);
+            this.#nodeMap.set(key, node);
         }
         else {
             this.#deleteNode(node);
@@ -53,13 +53,13 @@ export class Cache {
     }
 
     delete(key) {
-        const node = this.#keys.get(key);
+        const node = this.#nodeMap.get(key);
 
         return this.#deleteNode(node);
     }
 
     has(key) {
-        return this.#keys.has(key);
+        return this.#nodeMap.has(key);
     }
 
     /**
@@ -111,7 +111,7 @@ export class Cache {
     }
 
     get size() {
-        return this.#keys.size;
+        return this.#nodeMap.size;
     }
 
     get limit() {
@@ -119,7 +119,7 @@ export class Cache {
     }
 
     clear() {
-        this.#keys.clear();
+        this.#nodeMap.clear();
         this.#head = null;
         this.#tail = null;
     }
