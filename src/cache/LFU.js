@@ -77,11 +77,6 @@ class DoublyLinkedList {
 
         // delete detached node; or GC
     }
-
-    clear() {
-        this.head = null;
-        this.tail = null;
-    }
 }
 
 export class Cache {
@@ -180,5 +175,39 @@ export class Cache {
 
         // insert the key into the front of the new frequency list
         list.insertHeadNode(node);
+    }
+
+    get size() {
+        return this.#nodeMap.size;
+    }
+
+    get limit() {
+        return this.#limit;
+    }
+
+    clear() {
+        this.#nodeMap.clear();
+        this.#frequencyMap.clear();
+    }
+
+    has(key) {
+        return this.#nodeMap.has(key);
+    }
+
+    delete(key) {
+        const node = this.#nodeMap.get(key);
+
+        if (typeof node === 'undefined') {
+            return;
+        }
+
+        this.#nodeMap.delete(key);
+        const list = this.#frequencyMap.get(node.frequency);
+        list.deleteNode(node);
+
+        // delete any empty lists
+        if (list.isEmpty()) {
+            this.#frequencyMap.delete(node.frequency);
+        }
     }
 }
