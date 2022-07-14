@@ -50,7 +50,7 @@ export class Cache {
     }
 
     /**
-     * returns the data for the key
+     * returns the value for the key
      * 
      * @param {*} key 
      * @returns cached item or null
@@ -64,29 +64,29 @@ export class Cache {
 
         this.#cacheHit(key, entry);
 
-        return entry.data;
+        return entry.value;
     }
 
     /**
-     * replaces the data for the key if there is an existing entry
+     * replaces the value for the key if there is an existing entry
      * 
      * calling this will reset the ttl for the key
      * 
      * @param {*} key 
-     * @param {*} data 
+     * @param {*} value 
      */
-    set(key, data) {
+    set(key, value) {
         const entry = this.#cache.get(key);
 
         if (typeof entry === 'undefined') {
             this.#cache.set(key, {
-                data: data,
+                value: value,
                 timeoutID: setTimeout(() => this.#cache.delete(key), this.#ttl)
             });
         }
         else {
             this.#cacheHit(key, entry);
-            entry.data = data;
+            entry.value = value;
         }
     }
 
@@ -96,5 +96,10 @@ export class Cache {
 
     get ttl() {
         return this.#ttl;
+    }
+
+    clear() {
+        this.#cache.forEach(entry => clearTimeout(entry.timeoutID));
+        this.#cache.clear();
     }
 }

@@ -107,7 +107,7 @@ export class Cache {
             node.next.previous = node.previous;
         }
 
-        // delete detached node;
+        // delete detached node; or GC
     }
 
     get size() {
@@ -116,6 +116,12 @@ export class Cache {
 
     get limit() {
         return this.#limit;
+    }
+
+    clear() {
+        this.#keys.clear();
+        this.#head = null;
+        this.#tail = null;
     }
 }
 
@@ -176,5 +182,9 @@ export class CacheJs {
 
     get limit() {
         return this.#limit;
+    }
+
+    clear() {
+        this.#cache.clear();
     }
 }

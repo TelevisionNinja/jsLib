@@ -30,13 +30,15 @@ export class DoublyLinkedList {
             this.tail = copy;
             currentNode = currentNode.next;
 
-            this.length++;
+            // this.length++; // if the list does not have a length variable
         }
 
         // clean up the first node
         copy = this.head;
         this.head = copy.next;
-        // delete copy;
+        // delete copy; or GC
+
+        this.length = list.length;
     }
 
     insertHead(value) {
@@ -217,7 +219,20 @@ export class DoublyLinkedList {
         }
 
         this.length--;
-        // delete detached node;
+        // delete detached node; or GC
         return true;
+    }
+
+    clear() {
+        // manual memory management
+        // while (this.head !== null) {
+        //     const currentNode = this.head;
+        //     this.head = this.head.next;
+        //     // delete currentNode;
+        // }
+
+        this.head = null;
+        this.tail = null;
+        this.length = 0;
     }
 }
