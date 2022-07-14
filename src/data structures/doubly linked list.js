@@ -206,7 +206,22 @@ export class DoublyLinkedList {
      * @returns boolean
      */
     deleteHead() {
-        return this.deleteNode(this.head);
+        if (this.head === null) {
+            return false;
+        }
+
+        if (this.head === this.tail) {
+            this.tail = null;
+            this.head = null;
+        }
+        else {
+            this.head = this.head.next;
+            this.head.previous = null;
+        }
+
+        this.#length--;
+        // delete detached node; or GC
+        return true;
     }
 
     /**
@@ -214,7 +229,23 @@ export class DoublyLinkedList {
      * @returns boolean
      */
     deleteTail() {
-        return this.deleteNode(this.tail);
+        if (this.tail === null) {
+            return false;
+        }
+
+        // connect the previous node to the next node
+        if (this.tail === this.head) {
+            this.head = null;
+            this.tail = null;
+        }
+        else {
+            this.tail = this.tail.previous;
+            this.tail.next = null;
+        }
+
+        this.#length--;
+        // delete detached node; or GC
+        return true;
     }
 
     /**
@@ -223,7 +254,6 @@ export class DoublyLinkedList {
      * @returns boolean
      */
     deleteNode(node) {
-        // check if the value was found
         if (node === null) {
             return false;
         }
