@@ -55,10 +55,6 @@ class DoublyLinkedList {
      * @param {Node} node 
      */
     deleteNode(node) {
-        if (node === null) {
-            return;
-        }
-
         // connect the previous node to the next node
         if (node === this.head) {
             this.head = node.next;
