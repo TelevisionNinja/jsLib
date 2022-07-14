@@ -1,6 +1,5 @@
 // least frequently used cache
-
-import { DoublyLinkedList } from '../data structures/doubly linked list.js';
+// also uses least recently used
 
 class Node {
     constructor(key, value, frequency, nextNode, previousNode) {
@@ -9,6 +8,79 @@ class Node {
         this.frequency = frequency;
         this.next = nextNode;
         this.previous = previousNode;
+    }
+}
+
+class DoublyLinkedList {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+    }
+
+    /**
+     * 
+     * @param {Node} node 
+     */
+    insertHeadNode(node) {
+        node.next = this.head;
+        node.previous = null;
+
+        if (this.head === null) {
+            this.tail = node;
+        }
+        else {
+            this.head.previous = node;
+        }
+
+        this.head = node;
+    }
+
+    isEmpty() {
+        return this.head === null;
+    }
+
+    deleteTail() {
+        if (this.tail === this.head) {
+            this.head = null;
+            this.tail = null;
+        }
+        else {
+            this.tail = this.tail.previous;
+            this.tail.next = null;
+        }
+    }
+
+    /**
+     * 
+     * @param {Node} node 
+     */
+    deleteNode(node) {
+        if (node === null) {
+            return;
+        }
+
+        // connect the previous node to the next node
+        if (node === this.head) {
+            this.head = node.next;
+        }
+        else {
+            node.previous.next = node.next;
+        }
+
+        // connect the next node to the previous node
+        if (node === this.tail) {
+            this.tail = node.previous;
+        }
+        else {
+            node.next.previous = node.previous;
+        }
+
+        // delete detached node; or GC
+    }
+
+    clear() {
+        this.head = null;
+        this.tail = null;
     }
 }
 
@@ -78,7 +150,7 @@ export class Cache {
         const oldFrequencyList = this.#frequencyMap.get(node.frequency);
         oldFrequencyList.deleteNode(node);
 
-        if (oldFrequencyList.length === 0) {
+        if (oldFrequencyList.isEmpty()) {
             // delete any empty lists
             this.#frequencyMap.delete(node.frequency);
 
