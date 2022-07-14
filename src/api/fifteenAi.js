@@ -1,7 +1,6 @@
 import { cutOff } from '../stringUtils.js';
 import PQueue from 'p-queue';
 import { backOffFetch } from '../urlUtils.js';
-import fetch from 'node-fetch';
 
 const queue = new PQueue({
     interval: 1000,

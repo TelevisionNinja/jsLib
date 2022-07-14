@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import PQueue from 'p-queue';
 import {
     backOffFetch,

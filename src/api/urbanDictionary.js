@@ -1,5 +1,4 @@
 import { randomMath } from '../randomFunctions.js';
-import fetch from 'node-fetch';
 import PQueue from 'p-queue';
 import { backOffFetch } from '../urlUtils.js';
 

@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import { randomInt } from 'crypto';
 import PQueue from 'p-queue';
 import { backOffFetch } from './urlUtils.js';

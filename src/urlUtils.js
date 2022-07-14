@@ -1,5 +1,4 @@
 import axios from 'axios';
-import fetch from 'node-fetch';
 import PQueue from 'p-queue';
 
 const queue = new PQueue({

@@ -2,8 +2,7 @@ import { randomMath } from '../randomFunctions.js';
 import {
     tagArrToStr,
     tagArrToParsedTagArr
-} from '../stringUtils.js'
-import fetch from 'node-fetch';
+} from '../stringUtils.js';
 import { parse } from 'txml';
 import PQueue from 'p-queue';
 import { backOffFetch } from '../urlUtils.js';
