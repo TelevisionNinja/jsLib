@@ -92,6 +92,11 @@ export class Cache {
         this.#insertHead(node);
     }
 
+    /**
+     * 
+     * @param {Node} node 
+     * @returns node
+     */
     #insertHead(node) {
         let list = this.#frequencyMap.get(node.frequency);
 
