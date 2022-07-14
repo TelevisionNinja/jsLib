@@ -29,12 +29,12 @@ export class Cache {
             return null;
         }
 
-        this.updateFrequency(node);
+        this.#updateFrequency(node);
 
         return node.value;
     }
 
-    put(key, value) {
+    set(key, value) {
         if (this.#limit <= 0) {
             return;
         }
@@ -44,71 +44,64 @@ export class Cache {
         if (typeof node !== 'undefined') {
             // Key already exists, update the value and touch it
             node.value = value;
-            this.updateFrequency(node);
+            this.#updateFrequency(node);
             return;
         }
 
         if (this.#nodeMap.size === this.#limit) {
-            // No capacity, need to remove one entry that
-            // 1. has the lowest frequency
-            // 2. least recently used if there are multiple ones
-
-            // Step 1: remove the element from minimum frequency list
+            // remove an entry from minimum frequency list
             const minimunFrequencyList = this.#frequencyMap.get(this.#minimumFrequency);
-            const key_to_evict = minimunFrequencyList.tail.key;
+
+            // remove an entry using least recently used policy if there are multiple entries in the list
+            const tail = minimunFrequencyList.tail.key;
             minimunFrequencyList.deleteTail();
-
-            // Step 2: remove the key from cache
-            this.#nodeMap.delete(key_to_evict);
+            this.#nodeMap.delete(tail);
         }
 
-        // We know new item has frequency of 1, thus set min_freq to 1
-        const frequency = 1;
-        this.#minimumFrequency = frequency;
-
-        // check if the list for the frequency exists
-        let frequencyList = this.#frequencyMap.get(frequency);
-
-        if (typeof frequencyList === 'undefined') {
-            frequencyList = new DoublyLinkedList();
-            this.#frequencyMap.set(frequency, frequencyList);
-        }
+        // new entry has frequency of 1, but any number can be used as the starting list id
+        this.#minimumFrequency = 0;
 
         // Add the key to the frequency list
-        const newHead = frequencyList.insertHeadNode(new Node(key, value, 1, null, null));
+        const newHead = this.#insertHead(new Node(key, value, this.#minimumFrequency, null, null));
 
         // Create a new node
         this.#nodeMap.set(key, newHead);
     }
 
-    updateFrequency(node) {
-        // Step 1: update the frequency
+    /**
+     * 
+     * @param {Node} node 
+     */
+    #updateFrequency(node) {
+        // remove the entry from the old frequency list
         const oldFrequencyList = this.#frequencyMap.get(node.frequency);
+        oldFrequencyList.deleteNode(node);
 
-        if (typeof oldFrequencyList !== 'undefined') {
-            // Step 2: remove the entry from old frequency list
-            oldFrequencyList.deleteNode(node);
+        if (oldFrequencyList.length === 0) {
+            // delete any empty lists
+            this.#frequencyMap.delete(node.frequency);
 
-            if (oldFrequencyList.length === 0 && node.frequency === this.#minimumFrequency) {
-                // Delete the list
-                this.#frequencyMap.delete(node.frequency);
-
-                // Increase the min frequency
+            if (node.frequency === this.#minimumFrequency) {
+                // increase the minimum frequency
                 this.#minimumFrequency++;
             }
         }
 
-        //----------------------------------------------------
-
+        // update the frequency
         node.frequency++;
-        let nextList = this.#frequencyMap.get(node.frequency);
+        this.#insertHead(node);
+    }
 
-        // Step 4: insert the key into the front of the new frequency list
-        if (typeof nextList === 'undefined') {
-            nextList = new DoublyLinkedList();
-            this.#frequencyMap.set(node.frequency, nextList);
+    #insertHead(node) {
+        let list = this.#frequencyMap.get(node.frequency);
+
+        // check if the list for the frequency exists
+        if (typeof list === 'undefined') {
+            list = new DoublyLinkedList();
+            this.#frequencyMap.set(node.frequency, list);
         }
 
-        nextList.insertHeadNode(node);
+        // insert the key into the front of the new frequency list
+        return list.insertHeadNode(node);
     }
 }
