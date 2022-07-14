@@ -45,7 +45,7 @@ export class DoublyLinkedList {
     insertHead(value) {
         const newNode = new Node(value, this.head, null);
 
-        return insertHeadNode(newNode);
+        return this.insertHeadNode(newNode);
     }
 
     /**
@@ -73,7 +73,7 @@ export class DoublyLinkedList {
     insertTail(value) {
         const newNode = new Node(value, null, this.tail);
 
-        return insertTailNode(newNode);
+        return this.insertTailNode(newNode);
     }
 
     insertTailNode(node) {
@@ -173,7 +173,7 @@ export class DoublyLinkedList {
         // linear search
         const currentNode = this.searchNode(value);
 
-        return deleteNode(currentNode);
+        return this.deleteNode(currentNode);
     }
 
     /**
@@ -206,7 +206,7 @@ export class DoublyLinkedList {
      * @returns boolean
      */
     deleteHead() {
-        return deleteNode(this.head);
+        return this.deleteNode(this.head);
     }
 
     /**
@@ -214,7 +214,7 @@ export class DoublyLinkedList {
      * @returns boolean
      */
     deleteTail() {
-        return deleteNode(this.tail);
+        return this.deleteNode(this.tail);
     }
 
     /**
