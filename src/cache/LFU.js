@@ -2,12 +2,12 @@
 // also uses least recently used
 
 class Node {
-    constructor(key, value, frequency, nextNode, previousNode) {
+    constructor(key, value) {
         this.key = key;
         this.value = value;
-        this.frequency = frequency;
-        this.next = nextNode;
-        this.previous = previousNode;
+        this.frequency = 0;
+        this.next = null;
+        this.previous = null;
     }
 }
 
@@ -108,32 +108,29 @@ export class Cache {
 
         const node = this.#nodeMap.get(key);
 
-        if (typeof node !== 'undefined') {
-            // Key already exists, update the value and touch it
+        if (typeof node === 'undefined') {
+            if (this.#nodeMap.size === this.#limit) {
+                // remove an entry from minimum frequency list
+                const minimunFrequencyList = this.#frequencyMap.get(this.#minimumFrequency);
+
+                // remove an entry using least recently used policy if there are multiple entries in the list
+                this.#nodeMap.delete(minimunFrequencyList.tail.key);
+                minimunFrequencyList.deleteTail();
+            }
+
+            // new entry has frequency of 1, but any number can be used as the starting list id
+            this.#minimumFrequency = 0;
+
+            // add node to the frequency list and node map
+            const newHead = new Node(key, value);
+            this.#insertHead(newHead);
+            this.#nodeMap.set(key, newHead);
+        }
+        else {
+            // update the value and frequency
             node.value = value;
             this.#updateFrequency(node);
-            return;
         }
-
-        if (this.#nodeMap.size === this.#limit) {
-            // remove an entry from minimum frequency list
-            const minimunFrequencyList = this.#frequencyMap.get(this.#minimumFrequency);
-
-            // remove an entry using least recently used policy if there are multiple entries in the list
-            const tail = minimunFrequencyList.tail.key;
-            minimunFrequencyList.deleteTail();
-            this.#nodeMap.delete(tail);
-        }
-
-        // new entry has frequency of 1, but any number can be used as the starting list id
-        this.#minimumFrequency = 0;
-
-        // Add the key to the frequency list
-        const newHead = new Node(key, value, this.#minimumFrequency, null, null);
-        this.#insertHead(newHead);
-
-        // Create a new node
-        this.#nodeMap.set(key, newHead);
     }
 
     /**
