@@ -1,11 +1,14 @@
 // least frequently used cache
 // also uses least recently used
 
+// new entry has frequency of 1, but any number can be used as the starting list id
+const minimumFrequency = 0;
+
 class Node {
     constructor(key, value) {
         this.key = key;
         this.value = value;
-        this.frequency = 0;
+        this.frequency = minimumFrequency;
         this.next = null;
         this.previous = null;
     }
@@ -76,7 +79,7 @@ class DoublyLinkedList {
 }
 
 export class Cache {
-    #minimumFrequency = 0;
+    #minimumFrequency = minimumFrequency;
     #limit;
     #nodeMap = new Map();
     #frequencyMap = new Map();
@@ -112,10 +115,16 @@ export class Cache {
                 // remove an entry using least recently used policy if there are multiple entries in the list
                 this.#nodeMap.delete(minimunFrequencyList.tail.key);
                 minimunFrequencyList.deleteTail();
+
+                // delete any empty lists
+                // the minimum frequency is checked so that the list will not be deleted and created
+                if (this.#minimumFrequency !== minimumFrequency && minimunFrequencyList.isEmpty()) {
+                    this.#frequencyMap.delete(this.#minimumFrequency);
+                }
             }
 
             // new entry has frequency of 1, but any number can be used as the starting list id
-            this.#minimumFrequency = 0;
+            this.#minimumFrequency = minimumFrequency;
 
             // add node to the frequency list and node map
             const newHead = new Node(key, value);
@@ -135,10 +144,10 @@ export class Cache {
      */
     #updateFrequency(node) {
         // remove the entry from the old frequency list
-        const oldFrequencyList = this.#frequencyMap.get(node.frequency);
-        oldFrequencyList.deleteNode(node);
+        const list = this.#frequencyMap.get(node.frequency);
+        list.deleteNode(node);
 
-        if (oldFrequencyList.isEmpty()) {
+        if (list.isEmpty()) {
             // delete any empty lists
             this.#frequencyMap.delete(node.frequency);
 
