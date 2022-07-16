@@ -44,14 +44,14 @@ export class DoublyLinkedList {
 
     insertHead(value) {
         const newNode = new Node(value, this.head, null);
+        this.insertHeadNode(newNode);
 
-        return this.insertHeadNode(newNode);
+        return newNode;
     }
 
     /**
      * 
      * @param {Node} node 
-     * @returns 
      */
     insertHeadNode(node) {
         node.next = this.head;
@@ -66,16 +66,19 @@ export class DoublyLinkedList {
 
         this.head = node;
         this.#length++;
-
-        return this.head;
     }
 
     insertTail(value) {
         const newNode = new Node(value, null, this.tail);
+        this.insertTailNode(newNode);
 
-        return this.insertTailNode(newNode);
+        return newNode;
     }
 
+    /**
+     * 
+     * @param {Node} node 
+     */
     insertTailNode(node) {
         node.next = null
         node.previous = this.tail;
@@ -89,8 +92,6 @@ export class DoublyLinkedList {
 
         this.tail = node;
         this.#length++;
-
-        return this.tail;
     }
 
     sortedInsert(value) {
