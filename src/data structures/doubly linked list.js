@@ -159,7 +159,7 @@ export class DoublyLinkedList {
      * @param {*} value 
      * @returns boolean
      */
-    searchValue(value) {
+    hasValue(value) {
         return this.searchNode(value) !== null;
     }
 
