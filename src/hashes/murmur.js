@@ -45,6 +45,20 @@ function murmur3Scramble(k) {
 }
 
 /**
+ * gets the little endian int from 4 bytes starting at the index
+ * 
+ * @param {*} string 
+ * @param {*} index 
+ * @returns 
+ */
+function getLittleEndianInt(string, index) {
+	return (string.charCodeAt(index) & 0xff) |
+		((string.charCodeAt(index + 1) & 0xff) <<  8) |
+		((string.charCodeAt(index + 2) & 0xff) << 16) |
+		((string.charCodeAt(index + 3) & 0xff) << 24);
+}
+
+/**
  * unsigned 32 bit
  * 
  * @param {*} string 
@@ -58,10 +72,7 @@ export function murmur3(string, seed) {
 	let i = 0;
 
 	while (i < bytes) {
-	  	const k = (string.charCodeAt(i) & 0xff) |
-            ((string.charCodeAt(i + 1) & 0xff) << 8) |
-            ((string.charCodeAt(i + 2) & 0xff) << 16) |
-            ((string.charCodeAt(i + 3) & 0xff) << 24);
+	  	const k = getLittleEndianInt(string, i);
 
 		i += 4;
 
