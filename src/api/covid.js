@@ -1,10 +1,15 @@
 import PQueue from 'p-queue';
 import { backOffFetch } from '../urlUtils.js';
+import { numberLengthFormat } from '../stringUtils.js';
+import { parse } from 'csv-parse/sync';
+import {
+    getPopulationData,
+    extractStatePopulation
+} from './USStatePopulation.js';
 
 export default {
     getTestDataObj,
-    getVaccineDataObj,
-    getPopulation
+    getVaccineDataObj
 }
 
 const noResultsMsg = 'No results';
@@ -19,32 +24,53 @@ const queueVaccines = new PQueue({
     intervalCap: 50
 });
 
-const queuePopulation = new PQueue({
-    interval: 1000,
-    intervalCap: 100
-});
+/**
+ * 
+ * @param {*} csv csv string
+ * @returns array of array
+ */
+function parseCSV(csv) {
+    return parse(csv, { skipEmptyLines: true });
+}
 
 /**
  * 
  * @param {*} state 
- * @param {*} csvStr 
+ * @param {*} parsedCSV use parseCSV()
  * @returns 
  */
-function getStateDataLine(state, csvStr) {
-    const states = csvStr.split('\n');
-
+function getStateData(state, parsedCSV) {
     state = state.toLowerCase();
+    const columnNames = parsedCSV[0];
+    let stateNameIndex = 0;
 
-    let stateData = '';
+    for (let i = 0, n = columnNames.length; i < n; i++) {
+        const name = columnNames[i];
 
-    for (let i = 1, n = states.length; i < n; i++) {
-        if (states[i].toLowerCase().includes(state)) {
-            stateData = states[i];
+        if (name === 'Province_State') {
+            stateNameIndex = i;
             break;
         }
     }
 
-    return stateData;
+    let stateDataArray = [];
+
+    for (let i = 1, n = parsedCSV.length; i < n; i++) {
+        const stateData = parsedCSV[i];
+
+        if (stateData[stateNameIndex].toLowerCase().includes(state)) {
+            stateDataArray = stateData;
+            break;
+        }
+    }
+
+    const stateDataMap = new Map();
+
+    for (let i = 0, n = stateDataArray.length; i < n; i++) {
+        stateDataMap.set(columnNames[i], stateDataArray[i]);
+    }
+
+    return stateDataMap;
 }
 
 //---------------------------------------------------------------
@@ -60,34 +86,24 @@ function getTestURL(nthDayAgo) {
 
     dateObj.setUTCDate(dateObj.getUTCDate() - nthDayAgo);
 
-    const month = dateObj.getUTCMonth() + 1;
-    let monthStr = `${month}`;
+    const month = numberLengthFormat(dateObj.getUTCMonth() + 1);
+    const day = numberLengthFormat(dateObj.getUTCDate());
 
-    if (month < 10) {
-        monthStr = `0${monthStr}`;
-    }
-
-    const day = dateObj.getUTCDate();
-    let dayStr = `${day}`;
-
-    if (day < 10) {
-        dayStr = `0${dayStr}`;
-    }
-
-    return `https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/${monthStr}-${dayStr}-${dateObj.getUTCFullYear()}.csv`;
+    return `https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/${month}-${day}-${dateObj.getUTCFullYear()}.csv`;
 }
 
 /**
  * returns a csv of the latest us state covid data
  * 
  * @param {*} nthDay 
+ * @param {*} recursion 
  * @returns csv string
  */
-export async function getTestData(nthDay = 0) {
+export async function getTestData(nthDay = 0, recursion = 1) {
     let results = '';
 
     // limit recursion
-    if (nthDay === 5) {
+    if (recursion === 5) {
         return results;
     }
 
@@ -99,7 +115,7 @@ export async function getTestData(nthDay = 0) {
         }
 
         if (response.status === 404) {
-            results = await getTestData(nthDay + 1);
+            results = await getTestData(nthDay + 1, recursion + 1);
         }
         else {
             results = await response.text();
@@ -112,11 +128,11 @@ export async function getTestData(nthDay = 0) {
 /**
  * gets a states data from the csv
  * 
- * @param {*} stateData use getStateDataLine()
+ * @param {Map} stateData use getStateData()
  * @param {*} precision 
  * @returns 
  */
-function extractStateTestData(stateData, precision = 2) {
+function processStateTestData(stateData, precision = 2) {
     let stateName = '';
     let lastUpdate = '';
     let confirmed = 0;
@@ -137,7 +153,7 @@ function extractStateTestData(stateData, precision = 2) {
 
     let stateFound = false;
 
-    if (stateData.length) {
+    if (stateData.size) {
         stateFound = true;
     }
     else {
@@ -157,23 +173,21 @@ function extractStateTestData(stateData, precision = 2) {
         };
     }
 
-    const dataArr = stateData.split(',');
-
-    stateName = dataArr[0];
-    lastUpdate = dataArr[2].split(' ').join(' at ');
-    confirmed = parseInt(dataArr[5]);
-    deaths = parseInt(dataArr[6]);
-    recovered = parseInt(dataArr[7]);
-    active = parseInt(dataArr[8]);
+    stateName = stateData.get('Province_State');
+    lastUpdate = stateData.get('Last_Update').split(' ').join(' at ');
+    confirmed = parseInt(stateData.get('Confirmed'));
+    deaths = parseInt(stateData.get('Deaths'));
+    recovered = parseInt(stateData.get('Recovered'));
+    active = parseInt(stateData.get('Active'));
 
     // per 100,000 people
-    incidenceRate = (parseFloat(dataArr[10]) / 1000).toFixed(precision);
+    incidenceRate = (parseFloat(stateData.get('Incident_Rate')) / 1000).toFixed(precision);
 
-    totalTestResults = parseInt(dataArr[11]);
-    fatalityRatio = parseFloat(dataArr[13]).toFixed(precision);
+    totalTestResults = parseInt(stateData.get('Total_Test_Results'));
+    fatalityRatio = parseFloat(stateData.get('Case_Fatality_Ratio')).toFixed(precision);
 
     // per 100,000 people
-    testingPercentage = (parseFloat(dataArr[16]) / 1000).toFixed(precision);
+    testingPercentage = (parseFloat(stateData.get('Testing_Rate')) / 1000).toFixed(precision);
 
     source = 'Data from Johns Hopkins University';
 
@@ -338,10 +352,10 @@ export async function getVaccineData() {
 /**
  * gets a states data from the csv
  * 
- * @param {*} stateData use getStateDataLine()
+ * @param {Map} stateData use getStateData()
  * @returns 
  */
-function extractStateVaccineData(stateData) {
+function processStateVaccineData(stateData) {
     let stateName = '';
     let lastUpdate = '';
     let fullyVaccinated = 0;
@@ -352,7 +366,7 @@ function extractStateVaccineData(stateData) {
 
     let stateFound = false;
 
-    if (stateData.length) {
+    if (stateData.size) {
         stateFound = true;
     }
     else {
@@ -367,12 +381,10 @@ function extractStateVaccineData(stateData) {
         };
     }
 
-    const dataArr = stateData.split(',');
-
-    stateName = dataArr[1];
-    lastUpdate = dataArr[3];
-    fullyVaccinated = parseInt(dataArr[8]);
-    partiallyVaccinated = parseInt(dataArr[9]);
+    stateName = stateData.get('Province_State');
+    lastUpdate = stateData.get('Date');
+    fullyVaccinated = parseInt(stateData.get('People_Fully_Vaccinated'));
+    partiallyVaccinated = parseInt(stateData.get('People_Partially_Vaccinated'));
     totalVaccinated = fullyVaccinated + partiallyVaccinated;
 
     source = 'Data from Johns Hopkins University';
@@ -438,75 +450,6 @@ export function createVaccineEmbed(data) {
 //---------------------------------------------------------------
 
 /**
- * creates a url to get population data
- * 
- * @param {*} yearOffset 
- * @returns url string
- */
-function getPopulationURL(yearOffset) {
-    let dateObj = new Date();
-
-    dateObj.setUTCFullYear(dateObj.getUTCFullYear() - yearOffset);
-
-    return `https://api.census.gov/data/${dateObj.getUTCFullYear()}/pep/population?get=NAME,POP&for=state:*`;
-}
-
-/**
- * 
- * @param {*} yearOffset 
- * @returns array
- */
-export async function getPopulationData(yearOffset = 1) {
-    let results = '';
-
-    // limit recursion
-    if (yearOffset === 5) {
-        return results;
-    }
-
-    await queuePopulation.add(async () => {
-        const response = await fetch(getPopulationURL(yearOffset));
-
-        if (backOffFetch(response, queuePopulation)) {
-            return;
-        }
-
-        if (response.status === 404 || response.status === 400) {
-            results = await getPopulationData(yearOffset + 1);
-        }
-        else {
-            results = await response.json();
-        }
-    });
-
-    return results;
-}
-
-/**
- * 
- * @param {*} state 
- * @param {*} data use getPopulationData()
- * @returns -1 if no data is found
- */
-export function getStatePopulation(state, data) {
-    let result = -1;
-    state = state.toLowerCase();
-
-    for (let i = 1, n = data.length; i < n; i++) {
-        const current = data[i];
-
-        if (current[0].toLowerCase().startsWith(state)) {
-            result = parseInt(current[1]);
-            break;
-        }
-    }
-
-    return result;
-}
-
-//---------------------------------------------------------------
-
-/**
  * 
  * @param {*} state 
  * @param {*} precision 
@@ -525,14 +468,14 @@ export async function getDataEmbeds(state, precision = 2) {
 
     if (testData.length) {
         let embeds = [
-            createTestEmbed(extractStateTestData(getStateDataLine(state, testData), precision))
+            createTestEmbed(processStateTestData(getStateData(state, parseCSV(testData)), precision))
         ];
-        const vaccineStateData = extractStateVaccineData(getStateDataLine(state, vaccineData));
+        const vaccineStateData = processStateVaccineData(getStateData(state, parseCSV(vaccineData)));
         let vaccineEmbed = createVaccineEmbed(vaccineStateData);
 
         if (typeof vaccineEmbed.description !== 'undefined') {
             if (populationData.length) {
-                const population = getStatePopulation(state, populationData);
+                const population = extractStatePopulation(state, populationData);
     
                 if (population !== -1) {
                     vaccineEmbed.fields = [
@@ -586,7 +529,7 @@ export async function getCombinedEmbed(state, precision = 2) {
         fatalityRatio,
         testingPercentage,
         source
-    } = extractStateTestData(getStateDataLine(state, response[0]), precision);
+    } = processStateTestData(getStateData(state, parseCSV(response[0])), precision);
 
     if (stateFound) {
         const {
@@ -595,8 +538,8 @@ export async function getCombinedEmbed(state, precision = 2) {
             fullyVaccinated,
             partiallyVaccinated,
             totalVaccinated
-        } = extractStateVaccineData(getStateDataLine(state, response[1]));
-        const population = getStatePopulation(state, response[2]);
+        } = processStateVaccineData(getStateData(state, parseCSV(response[1])));
+        const population = extractStatePopulation(state, response[2]);
 
         return {
             title: `${stateName}`,
@@ -686,7 +629,7 @@ export async function getCombinedEmbed(state, precision = 2) {
  * @returns data object
  */
 export async function getTestDataObj(state, precision = 2) {
-    return extractStateTestData(getStateDataLine(state, await getTestData()), precision);
+    return processStateTestData(getStateData(state, parseCSV(await getTestData())), precision);
 }
 
 /**
@@ -695,14 +638,5 @@ export async function getTestDataObj(state, precision = 2) {
  * @returns data object
  */
 export async function getVaccineDataObj(state) {
-    return extractStateVaccineData(getStateDataLine(state, await getVaccineData()));
-}
-
-/**
- * 
- * @param {*} state state
- * @returns number
- */
-export async function getPopulation(state) {
-    return getStatePopulation(state, await getPopulationData());
+    return processStateVaccineData(getStateData(state, parseCSV(await getVaccineData())));
 }

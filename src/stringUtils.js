@@ -872,6 +872,19 @@ export function tagArrToParsedTagArr(tagArr, whitespace = ' ') {
     return tagArr;
 }
 
+/**
+ * 
+ * @param {*} n 
+ * @returns string of at least length 2
+ */
+export function numberLengthFormat(n) {
+    if (n < 10) {
+        return `0${n}`;
+    }
+
+    return n;
+}
+
 const oneKilobyte = Math.pow(2, 10);
 const byteUnits = [
     'Bytes',
@@ -905,4 +918,14 @@ export function byteFormat(bytes, precision = 2) {
 
     // parseFloat() is used to remove trailing zeros
     return `${parseFloat((bytes / Math.pow(oneKilobyte, power)).toFixed(precision))} ${byteUnits[power]}`;
+}
+
+/**
+ * removes all non alphabet, number, and space chars
+ * 
+ * @param {*} str 
+ * @returns 
+ */
+export function removeAllSpecialChars(str) {
+    return str.replace(/[^a-zA-Z0-9 ]/g, '');
 }
