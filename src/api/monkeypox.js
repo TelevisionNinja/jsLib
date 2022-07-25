@@ -1,12 +1,13 @@
 import PQueue from 'p-queue';
 import { backOffFetch } from '../urlUtils.js';
 import { parse } from 'csv-parse/sync';
+import { randomMath } from '../randomFunctions.js';
 
 const noResultsMsg = 'No results';
 
 const queueCases = new PQueue({
     interval: 1000,
-    intervalCap: 50
+    intervalCap: 100
 });
 
 /**
@@ -131,6 +132,13 @@ function processCountryCaseData(data) {
  * @returns 
  */
 export async function getEmbed(country) {
+    const results = await Promise.all([
+        getCaseData(),
+        getRandomSymptoms()
+    ]);
+    const caseData = results[0];
+    const symptoms = results[1];
+
     const {
         countryFound,
         countryName,
@@ -138,7 +146,7 @@ export async function getEmbed(country) {
         newCases,
         totalCases,
         source
-    } = processCountryCaseData(getCountryData(country, parseCSV(await getCaseData())));
+    } = processCountryCaseData(getCountryData(country, parseCSV(caseData)));
 
     if (countryFound) {
         return {
@@ -155,6 +163,11 @@ export async function getEmbed(country) {
                     name: 'Total Cases',
                     value: `${totalCases}`,
                     inline: true
+                },
+                {
+                    name: 'Symptoms',
+                    value: `${symptoms}`,
+                    inline: true
                 }
             ]
         };
@@ -163,4 +176,45 @@ export async function getEmbed(country) {
     return {
         title: noResultsMsg
     };
+}
+
+//---------------------------------------------------------------
+
+/**
+ * 
+ * @returns json
+ */
+export async function getIndividualData() {
+    let results = '';
+
+    await queueCases.add(async () => {
+        const response = await fetch('https://raw.githubusercontent.com/globaldothealth/monkeypox/main/latest.json');
+
+        if (backOffFetch(response, queueCases)) {
+            return;
+        }
+
+        results = await response.json();
+    });
+
+    return results;
+}
+
+/**
+ * 
+ * @param {*} cases 
+ * @returns 
+ */
+export async function getRandomSymptoms(cases = null) {
+    if (cases === null) {
+        cases = await getIndividualData();
+    }
+
+    const symptoms = cases[randomMath(cases.length)]['Symptoms'];
+
+    if (symptoms.length === 0) {
+        return getRandomSymptoms(cases);
+    }
+
+    return symptoms;
 }
