@@ -1,7 +1,7 @@
 import axios from 'axios';
 import PQueue from 'p-queue';
 
-const queue = new PQueue({
+const ampQueue = new PQueue({
     interval: 1000,
     intervalCap: 50
 });
@@ -93,6 +93,10 @@ export function backOffAxios(error, queue) {
         }
 
         setTimeout(() => {
+            if (backedOff) {
+                queue.clear();
+            }
+
             queue.start();
         }, time);
     }
@@ -170,7 +174,7 @@ export function extractURLs(str = '') {
 export async function convertAMPAxios(url) {
     let newLink = url;
 
-    await queue.add(async () => {
+    await ampQueue.add(async () => {
         try {
             const response = await axios.get(url);
             const link = response.request.res.responseUrl;
@@ -180,7 +184,7 @@ export async function convertAMPAxios(url) {
             }
         }
         catch (error) {
-            backOffAxios(error, queue);
+            backOffAxios(error, ampQueue);
             console.log(error);
         }
     });
@@ -197,10 +201,10 @@ export async function convertAMPAxios(url) {
 export async function convertAMPFetch(url) {
     let newLink = url;
 
-    await queue.add(async () => {
+    await ampQueue.add(async () => {
         const response = await fetch(url);
 
-        if (backOffFetch(response, queue)) {
+        if (backOffFetch(response, ampQueue)) {
             return;
         }
 
@@ -233,7 +237,7 @@ export async function convertAMPSetAxios(urlSet) {
         const n = urlSet.size;
 
         for (let i = 0; i < n; i++) {
-            responses.push(queue.add(() => axios.get(urlArray[i])));
+            responses.push(ampQueue.add(() => axios.get(urlArray[i])));
         }
 
         responses = await Promise.allSettled(responses);
@@ -264,7 +268,7 @@ export async function convertAMPSetAxios(urlSet) {
         }
     }
     catch (error) {
-        backOffAxios(error, queue);
+        backOffAxios(error, ampQueue);
         console.log(error);
     }
 
@@ -284,7 +288,7 @@ async function makeNewNonAMPURL(oldPath, oldDomain, oldURL, newURL) {
     if (oldDomain.startsWith(ampSubdomain) && !ampDetectRegex.test(oldPath)) {
         const response = await fetch(`https://${oldURL.substring(googleAMPPath.length + ampSubdomain.length)}`);
 
-        if (!backOffFetch(response, queue) && response.ok) {
+        if (!backOffFetch(response, ampQueue) && response.ok) {
             return response.url;
         }
     }
@@ -314,10 +318,10 @@ export async function convertAMPSetFetch(urlSet) {
     const n = urlSet.size;
 
     for (let i = 0; i < n; i++) {
-        responses.push(queue.add(async () => {
+        responses.push(ampQueue.add(async () => {
             const response = await fetch(urlArray[i]);
 
-            if (backOffFetch(response, queue)) {
+            if (backOffFetch(response, ampQueue)) {
                 return '';
             }
 
