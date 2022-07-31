@@ -140,6 +140,10 @@ export function backOffFetch(response, queue) {
         }
 
         setTimeout(() => {
+            if (backedOff) {
+                queue.clear();
+            }
+
             queue.start();
         }, time);
     }
