@@ -388,7 +388,13 @@ const extractDomainRegex = new RegExp(/([^\s\/]{1,}\.)?[^\s\/]{1,}\.[^\s\/]{2,}/
  * @returns ex: www.example.com
  */
 export function extractDomain(url) {
-    return url.match(extractDomainRegex)[0];
+    const results = url.match(extractDomainRegex);
+
+    if (results === null) {
+        return '';
+    }
+
+    return results[0];
 }
 
 /**
