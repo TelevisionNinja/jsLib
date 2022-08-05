@@ -29,5 +29,5 @@ export async function getFiftyFifty() {
     return {
         title,
         link
-    }
+    };
 }
