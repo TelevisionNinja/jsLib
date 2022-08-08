@@ -477,10 +477,34 @@ export async function convertAMPSetFetch(urlSet) {
     return newLinks;
 }
 
-const isValidAmpUrlRegex = new RegExp(/^https?:\/\/((([^\s\/]{1,}[^\w\s\/])?amp\.([^\s\/]{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?)|(([^\s\/]{1,}\.)?\w{1,}\.\w{2,}\/(\S{0,}[^\w\s])?amp\S{0,}))$/i);
+const isValidExplicitAmpUrlRegex = new RegExp(/^https?:\/\/([a-z0-9]{1,}\.){0,}((amp\.([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?)|([a-z0-9]{1,}\.[a-z0-9]{2,}\/([a-z0-9]{0,}[^a-z0-9\s]){0,}amp([^a-z0-9\s]\S{0,})?))$/i);
 
 /**
  * check if the link is an AMP link
+ * 
+ * @param {*} url 
+ * @returns 
+ */
+export function isExplicitAMP(url) {
+    return isValidExplicitAmpUrlRegex.test(url);
+}
+
+const extractExplicitAmpUrlsRegex = new RegExp(/\bhttps?:\/\/([a-z0-9]{1,}\.){0,}((amp\.([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?)|([a-z0-9]{1,}\.[a-z0-9]{2,}\/([a-z0-9]{0,}[^a-z0-9\s]){0,}amp([^a-z0-9\s]\S{0,})?))\b/ig);
+
+/**
+ * 
+ * @param {*} str 
+ * @returns set of URLs
+ */
+export function extractExplicitAmpUrls(str) {
+    const links = [...str.matchAll(extractExplicitAmpUrlsRegex)].map(e => e[0]);
+    return new Set(links);
+}
+
+const isValidAmpUrlRegex = new RegExp(/^https?:\/\/([a-z0-9]{1,}\.){0,}(([a-z0-9]{0,}amp[a-z0-9]{0,}\.([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?)|([a-z0-9]{1,}\.[a-z0-9]{2,}\/\S{0,}amp\S{0,}))$/i);
+
+/**
+ * check if the link has any mention of 'amp'
  * 
  * @param {*} url 
  * @returns 
@@ -489,9 +513,10 @@ export function isAMP(url) {
     return isValidAmpUrlRegex.test(url);
 }
 
-const extractAmpUrlsRegex = new RegExp(/\bhttps?:\/\/([a-z0-9]{1,}\.){0,}((amp\.([a-z0-9]{1,}\.){0,}([a-z0-9]{1,}\.)([a-z0-9]{2,})((\/\S{0,})|\b))|(([a-z0-9]{1,}\.)([a-z0-9]{2,})\/([a-z0-9]{0,}[^a-z0-9\s]){0,}amp(([^a-z0-9\s]\S{1,})|\b)))/ig);
+const extractAmpUrlsRegex = new RegExp(/\bhttps?:\/\/([a-z0-9]{1,}\.){0,}(([a-z0-9]{0,}amp[a-z0-9]{0,}\.([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?)|([a-z0-9]{1,}\.[a-z0-9]{2,}\/\S{0,}amp\S{0,}))\b/ig);
 
 /**
+ * extracts urls that have any mention of 'amp'
  * 
  * @param {*} str 
  * @returns set of URLs
@@ -507,7 +532,7 @@ export function extractAmpUrls(str) {
  * @returns array of non-AMP links
  */
 export function extractAndConvertAmpLinksAxios(str) {
-    const linkSet = extractAmpUrls(str);
+    const linkSet = extractExplicitAmpUrls(str);
 
     if (linkSet.size) {
         return convertAMPSetAxios(linkSet);
@@ -522,7 +547,7 @@ export function extractAndConvertAmpLinksAxios(str) {
  * @returns array of non-AMP links
  */
 export function extractAndConvertAmpLinksFetch(str) {
-    const linkSet = extractAmpUrls(str);
+    const linkSet = extractExplicitAmpUrls(str);
 
     if (linkSet.size) {
         return convertAMPSetFetch(linkSet);
