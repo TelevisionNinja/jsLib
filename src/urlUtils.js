@@ -25,7 +25,7 @@ export function replaceHTMLEntities(str) {
  * check for a scheme of 'http' or 'https'
  * check if the top level domain is of 2 or more characters
  */
-const isValidURLRegex = new RegExp(/^https?:\/\/([^\s\/]{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?$/i);
+const isValidURLRegex = new RegExp(/^https?:\/\/([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?$/i);
 
 /**
  * check for a scheme of 'http' or 'https'
@@ -42,7 +42,7 @@ export function isValidURL(str) {
  * check for a scheme of 'http' or 'https'
  * check if the top level domain is of 2 or more characters
  */
-const containsURLRegex = new RegExp(/\bhttps?:\/\/([^\s\/]{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?\b/i);
+const containsURLRegex = new RegExp(/\bhttps?:\/\/([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?\b/i);
 
 /**
  * check for a scheme of 'http' or 'https'
@@ -151,7 +151,7 @@ export function backOffFetch(response, queue) {
     return backedOff;
 }
 
-const extractURLsRegex = new RegExp(/\bhttps?:\/\/([^\s\/]{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?\b/ig);
+const extractURLsRegex = new RegExp(/\bhttps?:\/\/([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?\b/ig);
 
 /**
  * 
@@ -278,7 +278,7 @@ export async function convertAMPSetAxios(urlSet) {
     return newLinks;
 }
 
-const ampEndsRegex = new RegExp(/(^amp\.)|([^\w\s]amp$)/ig);
+const ampEndsRegex = new RegExp(/(^amp\.)|([^a-z0-9\s]amp$)/ig);
 
 /**
  * 
@@ -289,7 +289,7 @@ function removeAMPEnds(url) {
     return url.replaceAll(ampEndsRegex, '');
 }
 
-const ampPathRegex = new RegExp(/\/(([^\/\.]{1,}-amp)|(amp-[^\/\.]{1,})|(amp))\//ig);
+const ampPathRegex = new RegExp(/\/(([a-z0-9]{1,}-amp)|(amp-[a-z0-9]{1,})|(amp))\//ig);
 
 /**
  * 
@@ -380,11 +380,11 @@ function removeForwardSlash(url) {
     return url;
 }
 
-const extractDomainRegex = new RegExp(/([^\s\/]{1,}\.)?[^\s\/]{1,}\.[^\s\/]{2,}/i);
+const extractDomainRegex = new RegExp(/[a-z]{1,}:\/\/(([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,})/i);
 
 /**
  * 
- * @param {*} url 
+ * @param {*} url single url string
  * @returns ex: www.example.com
  */
 export function extractDomain(url) {
@@ -394,7 +394,7 @@ export function extractDomain(url) {
         return '';
     }
 
-    return results[0];
+    return results[1]; // return group 1
 }
 
 /**
@@ -492,6 +492,7 @@ export function isExplicitAMP(url) {
 const extractExplicitAmpUrlsRegex = new RegExp(/\bhttps?:\/\/([a-z0-9]{1,}\.){0,}((amp\.([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?)|([a-z0-9]{1,}\.[a-z0-9]{2,}\/([a-z0-9]{0,}[^a-z0-9\s]){0,}amp([^a-z0-9\s]\S{0,})?))\b/ig);
 
 /**
+ * extracts urls that explicitly indicate 'amp'
  * 
  * @param {*} str 
  * @returns set of URLs
