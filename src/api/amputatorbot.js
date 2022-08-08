@@ -33,7 +33,7 @@ export async function getCanonicals(str, guessAndCheck = true, maxDepth = 3) {
             const linkObject = linkArray[i];
 
             if (linkObject.canonical !== null) {
-                canonicals.push(linkObject.canonical.url)
+                canonicals.push(linkObject.canonical.url);
             }
         }
     });
