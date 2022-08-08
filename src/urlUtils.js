@@ -489,7 +489,7 @@ export function isAMP(url) {
     return isValidAmpUrlRegex.test(url);
 }
 
-const extractAmpUrlsRegex = new RegExp(/\bhttps?:\/\/((([^\s\/]{1,}[^\w\s\/])?amp\.([^\s\/]{1,}\.)?\w{1,}\.\w{2,}(\/\S{0,})?)|(([^\s\/]{1,}\.)?\w{1,}\.\w{2,}\/(\S{0,}[^\w\s])?amp\S{0,}))\b/ig);
+const extractAmpUrlsRegex = new RegExp(/\bhttps?:\/\/([a-z0-9]{1,}\.){0,}((amp\.([a-z0-9]{1,}\.){0,}([a-z0-9]{1,}\.)([a-z0-9]{2,})((\/\S{0,})|\b))|(([a-z0-9]{1,}\.)([a-z0-9]{2,})\/([a-z0-9]{0,}[^a-z0-9\s]){0,}amp(([^a-z0-9\s]\S{1,})|\b)))/ig);
 
 /**
  * 
