@@ -112,8 +112,8 @@ function processCountryCaseData(data) {
 
     countryName = data.get('Country');
     lastUpdate = data.get('Date');
-    newCases = parseInt(data.get('Cases'));
-    totalCases = parseInt(data.get('Cumulative_cases'));
+    newCases = parseInt(data.get('Cases'), 10);
+    totalCases = parseInt(data.get('Cumulative_cases'), 10);
     source = `Global.health Monkeypox (accessed on ${new Date().toLocaleDateString('en-CA')})`;
 
     return {

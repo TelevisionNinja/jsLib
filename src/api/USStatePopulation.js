@@ -66,7 +66,7 @@ export function extractStatePopulation(state, data) {
         const current = data[i];
 
         if (current[0].toLowerCase().startsWith(state)) {
-            result = parseInt(current[1]);
+            result = parseInt(current[1], 10);
             break;
         }
     }

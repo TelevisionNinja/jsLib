@@ -176,15 +176,15 @@ function processStateTestData(stateData, precision = 2) {
 
     stateName = stateData.get('Province_State');
     lastUpdate = stateData.get('Last_Update').split(' ').join(' at ');
-    confirmed = parseInt(stateData.get('Confirmed'));
-    deaths = parseInt(stateData.get('Deaths'));
-    recovered = parseInt(stateData.get('Recovered'));
-    active = parseInt(stateData.get('Active'));
+    confirmed = parseInt(stateData.get('Confirmed'), 10);
+    deaths = parseInt(stateData.get('Deaths'), 10);
+    recovered = parseInt(stateData.get('Recovered'), 10);
+    active = parseInt(stateData.get('Active'), 10);
 
     // per 100,000 people
     incidenceRate = (parseFloat(stateData.get('Incident_Rate')) / 1000).toFixed(precision);
 
-    totalTestResults = parseInt(stateData.get('Total_Test_Results'));
+    totalTestResults = parseInt(stateData.get('Total_Test_Results'), 10);
     fatalityRatio = parseFloat(stateData.get('Case_Fatality_Ratio')).toFixed(precision);
 
     // per 100,000 people
@@ -384,8 +384,8 @@ function processStateVaccineData(stateData) {
 
     stateName = stateData.get('Province_State');
     lastUpdate = stateData.get('Date');
-    fullyVaccinated = parseInt(stateData.get('People_Fully_Vaccinated'));
-    partiallyVaccinated = parseInt(stateData.get('People_Partially_Vaccinated'));
+    fullyVaccinated = parseInt(stateData.get('People_Fully_Vaccinated'), 10);
+    partiallyVaccinated = parseInt(stateData.get('People_Partially_Vaccinated'), 10);
     totalVaccinated = fullyVaccinated + partiallyVaccinated;
 
     source = 'Data from Johns Hopkins University';

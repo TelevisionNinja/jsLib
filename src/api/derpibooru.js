@@ -29,7 +29,7 @@ export async function getImage(tagArr, apiKey = '') {
         }
 
         const body = await response.json();
-        const results = parseInt(body.total);
+        const results = parseInt(body.total, 10);
 
         if (results) {
             const img = body.images[0];
