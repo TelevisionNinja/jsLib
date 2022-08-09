@@ -83,3 +83,19 @@ export async function randomTrue(min = 0, max = 0, base = 10) {
 
     return result;
 }
+
+/**
+ * 
+ * @param {*} min inclusive min
+ * @param {*} max 
+ * @param {*} inclusive exclusive max
+ * @returns 
+ */
+export function randomInteger(min = 0, max = 0) {
+    try {
+        return randomCrypto(min, max);
+    }
+    catch (error) {
+        return randomMath(min, max);
+    }
+}

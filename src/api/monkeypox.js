@@ -1,7 +1,7 @@
 import PQueue from 'p-queue';
 import { backOffFetch } from '../urlUtils.js';
 import { parse } from 'csv-parse/sync';
-import { randomMath } from '../randomFunctions.js';
+import { randomInteger } from '../randomFunctions.js';
 
 const noResultsMsg = 'No results';
 
@@ -210,7 +210,7 @@ export async function getRandomSymptoms(cases = null) {
         cases = await getIndividualData();
     }
 
-    const symptoms = cases[randomMath(cases.length)]['Symptoms'];
+    const symptoms = cases[randomInteger(cases.length)]['Symptoms'];
 
     if (symptoms.length === 0) {
         return getRandomSymptoms(cases);

@@ -1,4 +1,4 @@
-import { randomMath } from '../randomFunctions.js';
+import { randomInteger } from '../randomFunctions.js';
 import {
     tagArrToStr,
     tagArrToParsedTagArr
@@ -73,7 +73,7 @@ export async function getImageRule34(tagArr) {
                 count = 200000;
             }
 
-            const pid = randomMath(count);
+            const pid = randomInteger(count);
 
             response = await fetch(`${URL}1&pid=${pid}`);
 
@@ -135,7 +135,7 @@ export async function getImagePaheal(tagArr) {
 
             // (max # images) / (limit per request) = pid max
             // ex: 200001 / 100 = a pid max of 2000 bc it starts at 0
-            const pid = randomMath(count);
+            const pid = randomInteger(count);
 
             response = await fetch(`${URL}1&pid=${pid}`);
 

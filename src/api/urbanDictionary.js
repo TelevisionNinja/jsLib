@@ -1,4 +1,4 @@
-import { randomMath } from '../randomFunctions.js';
+import { randomInteger } from '../randomFunctions.js';
 import PQueue from 'p-queue';
 import { backOffFetch } from '../urlUtils.js';
 
@@ -30,7 +30,7 @@ export async function getDefinition(term) {
         count = defs.length;
 
         if (count) {
-            result = defs[randomMath(count)];
+            result = defs[randomInteger(count)];
         }
     });
 
