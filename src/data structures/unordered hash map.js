@@ -1,3 +1,5 @@
+// uses array of hash maps
+
 import { murmur3 } from '../hashes/murmur.js';
 
 class Entry {
