@@ -25,7 +25,7 @@ export function replaceHTMLEntities(str) {
  * check for a scheme of 'http' or 'https'
  * check if the top level domain is of 2 or more characters
  */
-const isValidURLRegex = new RegExp(/^https?:\/\/([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?$/i);
+const isValidURLRegex = new RegExp(/^https?:\/\/(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.){0,}([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.[a-z0-9][a-z0-9-]{0,61}[a-z0-9](\/\S{0,})?$/i);
 
 /**
  * check for a scheme of 'http' or 'https'
@@ -42,7 +42,7 @@ export function isValidURL(str) {
  * check for a scheme of 'http' or 'https'
  * check if the top level domain is of 2 or more characters
  */
-const containsURLRegex = new RegExp(/\bhttps?:\/\/([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?\b/i);
+const containsURLRegex = new RegExp(/\bhttps?:\/\/(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.){0,}([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.[a-z0-9][a-z0-9-]{0,61}[a-z0-9](\/\S{0,})?\b/i);
 
 /**
  * check for a scheme of 'http' or 'https'
@@ -151,7 +151,7 @@ export function backOffFetch(response, queue) {
     return backedOff;
 }
 
-const extractURLsRegex = new RegExp(/\bhttps?:\/\/([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?\b/ig);
+const extractURLsRegex = new RegExp(/\bhttps?:\/\/(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.){0,}([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.[a-z0-9][a-z0-9-]{0,61}[a-z0-9](\/\S{0,})?\b/ig);
 
 /**
  * 
@@ -380,7 +380,7 @@ function removeForwardSlash(url) {
     return url;
 }
 
-const extractDomainRegex = new RegExp(/[a-z]{1,}:\/\/(([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,})/i);
+const extractDomainRegex = new RegExp(/^[a-z]{1,}:\/\/((([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.){0,}([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(\/\S{0,})?$/i);
 
 /**
  * 
@@ -477,7 +477,7 @@ export async function convertAMPSetFetch(urlSet) {
     return newLinks;
 }
 
-const isValidExplicitAmpUrlRegex = new RegExp(/^https?:\/\/([a-z0-9]{1,}\.){0,}((amp\.([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?)|([a-z0-9]{1,}\.[a-z0-9]{2,}\/([a-z0-9]{0,}[^a-z0-9\s]){0,}amp([^a-z0-9\s]\S{0,})?))$/i);
+const isValidExplicitAmpUrlRegex = new RegExp(/^https?:\/\/(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.){0,}(((?=([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.)((amp)|(amp[^a-z0-9][a-z0-9-]{0,})|([a-z0-9-]{0,}[^a-z0-9]amp)|([a-z0-9-]{0,}[^a-z0-9]amp[^a-z0-9][a-z0-9-]{0,}))\.(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.){0,}([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.[a-z0-9][a-z0-9-]{0,61}[a-z0-9](\/\S{0,})?)|(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.[a-z0-9][a-z0-9-]{0,61}[a-z0-9]\/([a-z0-9]{0,}[^a-z0-9\s]){0,}amp([^a-z0-9\s]\S{0,})?))$/i);
 
 /**
  * check if the link is an AMP link
@@ -489,7 +489,7 @@ export function isExplicitAMP(url) {
     return isValidExplicitAmpUrlRegex.test(url);
 }
 
-const extractExplicitAmpUrlsRegex = new RegExp(/\bhttps?:\/\/([a-z0-9]{1,}\.){0,}((amp\.([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?)|([a-z0-9]{1,}\.[a-z0-9]{2,}\/([a-z0-9]{0,}[^a-z0-9\s]){0,}amp([^a-z0-9\s]\S{0,})?))\b/ig);
+const extractExplicitAmpUrlsRegex = new RegExp(/\bhttps?:\/\/(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.){0,}(((?=([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.)((amp)|(amp[^a-z0-9][a-z0-9-]{0,})|([a-z0-9-]{0,}[^a-z0-9]amp)|([a-z0-9-]{0,}[^a-z0-9]amp[^a-z0-9][a-z0-9-]{0,}))\.(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.){0,}([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.[a-z0-9][a-z0-9-]{0,61}[a-z0-9](\/\S{0,})?)|(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.[a-z0-9][a-z0-9-]{0,61}[a-z0-9]\/([a-z0-9]{0,}[^a-z0-9\s]){0,}amp([^a-z0-9\s]\S{0,})?))\b/ig);
 
 /**
  * extracts urls that explicitly indicate 'amp'
@@ -502,7 +502,7 @@ export function extractExplicitAmpUrls(str) {
     return new Set(links);
 }
 
-const isValidAmpUrlRegex = new RegExp(/^https?:\/\/([a-z0-9]{1,}\.){0,}(([a-z0-9]{0,}amp[a-z0-9]{0,}\.([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?)|([a-z0-9]{1,}\.[a-z0-9]{2,}\/\S{0,}amp\S{0,}))$/i);
+const isValidAmpUrlRegex = new RegExp(/^https?:\/\/(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.){0,}(((?=([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.)[a-z0-9-]{0,}amp[a-z0-9-]{0,}\.(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.){0,}([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.[a-z0-9][a-z0-9-]{0,61}[a-z0-9](\/\S{0,})?)|(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.[a-z0-9][a-z0-9-]{0,61}[a-z0-9]\/\S{0,}amp\S{0,}))$/i);
 
 /**
  * check if the link has any mention of 'amp'
@@ -514,7 +514,7 @@ export function isAMP(url) {
     return isValidAmpUrlRegex.test(url);
 }
 
-const extractAmpUrlsRegex = new RegExp(/\bhttps?:\/\/([a-z0-9]{1,}\.){0,}(([a-z0-9]{0,}amp[a-z0-9]{0,}\.([a-z0-9]{1,}\.){0,}[a-z0-9]{1,}\.[a-z0-9]{2,}(\/\S{0,})?)|([a-z0-9]{1,}\.[a-z0-9]{2,}\/\S{0,}amp\S{0,}))\b/ig);
+const extractAmpUrlsRegex = new RegExp(/\bhttps?:\/\/(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.){0,}(((?=([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.)[a-z0-9-]{0,}amp[a-z0-9-]{0,}\.(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.){0,}([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.[a-z0-9][a-z0-9-]{0,61}[a-z0-9](\/\S{0,})?)|(([a-z0-9][a-z0-9-]{0,61})?[a-z0-9]\.[a-z0-9][a-z0-9-]{0,61}[a-z0-9]\/\S{0,}amp\S{0,}))\b/ig);
 
 /**
  * extracts urls that have any mention of 'amp'
