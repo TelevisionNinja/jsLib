@@ -73,3 +73,60 @@ export function temporalGetDaylightSavingsOffset(date) {
 export function getCalendar() {
     return new Intl.DateTimeFormat().resolvedOptions().calendar;
 }
+
+/**
+ * 
+ * @param {*} monthNumber 1 to 12
+ * @returns name of month
+ */
+export function monthNumberToMonthName(monthNumber) {
+    return [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+    ][monthNumber - 1];
+}
+
+const monthNameNumberMap = new Map();
+monthNameNumberMap.set('january', 1);
+monthNameNumberMap.set('february', 2);
+monthNameNumberMap.set('march', 3);
+monthNameNumberMap.set('april', 4);
+monthNameNumberMap.set('may', 5);
+monthNameNumberMap.set('june', 6);
+monthNameNumberMap.set('july', 7);
+monthNameNumberMap.set('august', 8);
+monthNameNumberMap.set('september', 9);
+monthNameNumberMap.set('october', 10);
+monthNameNumberMap.set('november', 11);
+monthNameNumberMap.set('december', 12);
+monthNameNumberMap.set('jan', 1);
+monthNameNumberMap.set('feb', 2);
+monthNameNumberMap.set('mar', 3);
+monthNameNumberMap.set('apr', 4);
+monthNameNumberMap.set('may', 5);
+monthNameNumberMap.set('jun', 6);
+monthNameNumberMap.set('jul', 7);
+monthNameNumberMap.set('aug', 8);
+monthNameNumberMap.set('sep', 9);
+monthNameNumberMap.set('oct', 10);
+monthNameNumberMap.set('nov', 11);
+monthNameNumberMap.set('dec', 12);
+
+/**
+ * 
+ * @param {*} month string
+ * @returns month number
+ */
+export function monthNameToMonthNumber(month) {
+    return monthNameNumberMap.get(month.toLowerCase());
+}
