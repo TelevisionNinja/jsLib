@@ -95,40 +95,35 @@ export function trimSubstr(str, trimSubstr) {
         return str;
     }
 
-    let strIndex = end,
-        substrIndex = substrLen;
-    while (strIndex !== 0) {
-        strIndex--;
-        substrIndex--;
-
-        if (str[strIndex] !== trimSubstr[substrIndex]) {
-            break;
-        }
-
+    let substrIndex = substrLen;
+    do {
         if (substrIndex === 0) {
-            end = strIndex;
             substrIndex = substrLen;
         }
-    }
 
-    if (end === 0) {
+        end--;
+        substrIndex--;
+    }
+    while (end >= 0 && str[end] === trimSubstr[substrIndex]);
+
+    if (end < 0) {
         return '';
     }
 
-    let start = 0;
-    strIndex = 0;
+    end += substrLen - substrIndex;
+
+    let strIndex = 0;
     substrIndex = 0;
     while (str[strIndex] === trimSubstr[substrIndex]) {
         strIndex++;
         substrIndex++;
 
         if (substrIndex === substrLen) {
-            start = strIndex;
             substrIndex = 0;
         }
     }
 
-    return str.substring(start, end);
+    return str.substring(strIndex - substrIndex, end);
 }
 
 /**
@@ -146,24 +141,18 @@ export function trimSubstrLeft(str, trimSubstr) {
         return str;
     }
 
-    let start = 0,
-        strIndex = 0,
+    let strIndex = 0,
         substrIndex = 0;
-    while (start < len) {
-        if (str[strIndex] !== trimSubstr[substrIndex]) {
-            return str.substring(start);
-        }
-
+    while (strIndex < len && str[strIndex] === trimSubstr[substrIndex]) {
         strIndex++;
         substrIndex++;
 
         if (substrIndex === substrLen) {
-            start = strIndex;
             substrIndex = 0;
         }
     }
 
-    return '';
+    return str.substring(strIndex - substrIndex);
 }
 
 /**
@@ -181,23 +170,18 @@ export function trimSubstrRight(str, trimSubstr) {
         return str;
     }
 
-    let strIndex = end,
-        substrIndex = substrLen;
-    while (strIndex !== 0) {
-        strIndex--;
-        substrIndex--;
-
-        if (str[strIndex] !== trimSubstr[substrIndex]) {
-            return str.substring(0, end);
-        }
-
+    let substrIndex = substrLen;
+    do {
         if (substrIndex === 0) {
-            end = strIndex;
             substrIndex = substrLen;
         }
-    }
 
-    return '';
+        strIndex--;
+        substrIndex--;
+    }
+    while (strIndex >= 0 && str[strIndex] === trimSubstr[substrIndex]);
+
+    return str.substring(0, strIndex + substrLen - substrIndex);
 }
 
 /**
