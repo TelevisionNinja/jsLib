@@ -10,8 +10,8 @@ const whitespaceChars = new Set([
 /**
  * trims a specified character from a string
  * 
- * @param {*} str str to be trimmmed
- * @param {*} trimChar char that will be trimed off of the str
+ * @param {*} str str to be trimmed
+ * @param {*} trimChar char that will be trimmed off of the str
  * @returns 
  */
 export function trimChar(str, trimChar) {
@@ -40,8 +40,8 @@ export function trimChar(str, trimChar) {
 /**
  * trims a specified character from the left side of a string
  * 
- * @param {*} str str to be trimmmed
- * @param {*} trimChar char that will be trimed off of the str
+ * @param {*} str str to be trimmed
+ * @param {*} trimChar char that will be trimmed off of the str
  * @returns 
  */
 export function trimCharLeft(str, trimChar) {
@@ -62,8 +62,8 @@ export function trimCharLeft(str, trimChar) {
 /**
  * trims a specified character from the right side of a string
  * 
- * @param {*} str str to be trimmmed
- * @param {*} trimChar char that will be trimed off of the str
+ * @param {*} str str to be trimmed
+ * @param {*} trimChar char that will be trimmed off of the str
  * @returns 
  */
 export function trimCharRight(str, trimChar) {
@@ -83,8 +83,8 @@ export function trimCharRight(str, trimChar) {
 /**
  * trims a substring from a string
  * 
- * @param {*} str str to be trimmmed
- * @param {*} trimSubstr substring that will be trimed off of the str
+ * @param {*} str str to be trimmed
+ * @param {*} trimSubstr substring that will be trimmed off of the str
  * @returns 
  */
 export function trimSubstr(str, trimSubstr) {
@@ -134,8 +134,8 @@ export function trimSubstr(str, trimSubstr) {
 /**
  * trims a substring from the left side of a string
  * 
- * @param {*} str str to be trimmmed
- * @param {*} trimSubstr substring that will be trimed off of the str
+ * @param {*} str str to be trimmed
+ * @param {*} trimSubstr substring that will be trimmed off of the str
  * @returns 
  */
 export function trimSubstrLeft(str, trimSubstr) {
@@ -169,8 +169,8 @@ export function trimSubstrLeft(str, trimSubstr) {
 /**
  * trims a substring from the right side of a string
  * 
- * @param {*} str str to be trimmmed
- * @param {*} trimSubstr substring that will be trimed off of the str
+ * @param {*} str str to be trimmed
+ * @param {*} trimSubstr substring that will be trimmed off of the str
  * @returns 
  */
 export function trimSubstrRight(str, trimSubstr) {
@@ -304,7 +304,7 @@ export function includesPhrase2(str, phrase, caseSensitive = true) {
  * trims a list of characters from a string
  * 
  * @param {*} str 
- * @param {*} charArr chars that will be trimed off of the str
+ * @param {*} charArr chars that will be trimmed off of the str
  * @returns 
  */
 export function trimCharArr(str, charArr) {
@@ -353,8 +353,8 @@ export function trimCharArr(str, charArr) {
 /**
  * trims a set of characters from a string
  * 
- * @param {*} str str to be trimmmed
- * @param {*} charSet chars that will be trimed off of the str
+ * @param {*} str str to be trimmed
+ * @param {*} charSet chars that will be trimmed off of the str
  * @returns 
  */
 export function trimCharSet(str, charSet) {
@@ -385,8 +385,8 @@ export function trimCharSet(str, charSet) {
 /**
  * trims a set of characters from the left side of a string
  * 
- * @param {*} str str to be trimmmed
- * @param {*} charSet chars that will be trimed off of the str
+ * @param {*} str str to be trimmed
+ * @param {*} charSet chars that will be trimmed off of the str
  * @returns 
  */
 export function trimCharSetLeft(str, charSet) {
@@ -407,8 +407,8 @@ export function trimCharSetLeft(str, charSet) {
 /**
  * trims a set of characters from the right side of a string
  * 
- * @param {*} str str to be trimmmed
- * @param {*} charSet chars that will be trimed off of the str
+ * @param {*} str str to be trimmed
+ * @param {*} charSet chars that will be trimmed off of the str
  * @returns 
  */
 export function trimCharSetRight(str, charSet) {
@@ -429,7 +429,7 @@ export function trimCharSetRight(str, charSet) {
  * trims a list of substrings from a string
  * 
  * @param {*} str 
- * @param {*} substrArr substrings that will be trimed off of the str, must be sorted from longest to shortest
+ * @param {*} substrArr substrings that will be trimmed off of the str, must be sorted from longest to shortest
  * @returns 
  */
 export function trimSubstrArr(str, substrArr) {
@@ -512,7 +512,7 @@ export function trimSubstrArr(str, substrArr) {
  * trims a list of substrings from the left side of a string
  * 
  * @param {*} str 
- * @param {*} substrArr substrings that will be trimed off of the str, must be sorted from longest to shortest
+ * @param {*} substrArr substrings that will be trimmed off of the str, must be sorted from longest to shortest
  * @returns 
  */
 export function trimSubstrArrLeft(str, substrArr) {
@@ -558,7 +558,7 @@ export function trimSubstrArrLeft(str, substrArr) {
  * trims a list of substrings from the right side of a string
  * 
  * @param {*} str 
- * @param {*} substrArr substrings that will be trimed off of the str, must be sorted from longest to shortest
+ * @param {*} substrArr substrings that will be trimmed off of the str, must be sorted from longest to shortest
  * @returns 
  */
 export function trimSubstrArrRight(str, substrArr) {
