@@ -71,7 +71,7 @@ export class UnorderedHashMap {
         let collisionHashTable = this.#collisionHashTables[index];
 
         if (typeof collisionHashTable === 'undefined') {
-            collisionHashTable = new UnorderedHashMap(this.#entries.length);
+            collisionHashTable = new UnorderedHashMap(this.#entries.length * 2);
             collisionHashTable.#seed = this.#seed + 1;
             this.#collisionHashTables[index] = collisionHashTable;
         }
