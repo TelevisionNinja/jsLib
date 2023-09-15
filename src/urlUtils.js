@@ -71,6 +71,10 @@ export function backOffAxios(error, queue) {
     if ((errorCode >= 400 || errorCodes.has(errorCode)) && !queue.isPaused) {
         queue.pause();
 
+        if (errorCode >= 500) {
+            backedOff = true;
+        }
+
         const retryTime = error.response.headers['retry-after'];
         let time = 1;
 
@@ -117,6 +121,10 @@ export function backOffFetch(response, queue) {
 
     if ((errorCode >= 400 || errorCodes.has(errorCode)) && !queue.isPaused) {
         queue.pause();
+
+        if (errorCode >= 500) {
+            backedOff = true;
+        }
 
         const retryTime = response.headers.get('retry-after');
         let time = 1;
