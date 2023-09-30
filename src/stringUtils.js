@@ -913,3 +913,48 @@ export function byteFormat(bytes, precision = 2) {
 export function removeAllSpecialChars(str) {
     return str.replace(/[^a-zA-Z0-9 ]/g, '');
 }
+
+/**
+ * 
+ * @param {*} string 
+ * @param {*} threshold number of chars >= of when to treat consecutive duplicates as 1 char, 3 is the default as there does not appear to be a word that contains 3 consecutive duplicate chars in english
+ * @param {*} maximum number of chars to replace the consecutive duplicates
+ * @returns 
+ */
+export function removeConsecutiveDuplicateChars(string, threshold = 3, maximum = 2) {
+    let newString = "";
+    let iteratorIndex = 1;
+    let currentCharIndex = 0;
+    const len = string.length;
+
+    while (iteratorIndex < len) {
+        if (string[iteratorIndex] != string[currentCharIndex]) {
+            let distance = iteratorIndex - currentCharIndex;
+
+            if (distance >= threshold) {
+                distance = maximum;
+            }
+
+            for (let i = 0; i < distance; i++) {
+                newString += string[currentCharIndex];
+            }
+
+            currentCharIndex = iteratorIndex;
+        }
+
+        iteratorIndex++;
+    }
+
+    // handle last char
+    let distance = iteratorIndex - currentCharIndex;
+
+    if (distance >= threshold) {
+        distance = maximum;
+    }
+
+    for (let i = 0; i < distance; i++) {
+        newString += string[currentCharIndex];
+    }
+
+    return newString;
+}
