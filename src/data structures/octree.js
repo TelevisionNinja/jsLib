@@ -280,7 +280,14 @@ export class Octree {
         return this.values;
     }
 
-    getVectors(topLeftFrontVector, bottomRightBackVector) {
+    /**
+     * 
+     * @param {*} topLeftFrontVector 
+     * @param {*} bottomRightBackVector 
+     * @param {*} limit limit the returned array size
+     * @returns array
+     */
+    getVectors(topLeftFrontVector, bottomRightBackVector, limit = null) {
         if (!this.isCubeIntersecting(topLeftFrontVector, bottomRightBackVector, this.topLeftFront, this.bottomRightBack)) {
             return [];
         }
@@ -292,10 +299,19 @@ export class Octree {
                 const currentChild = this.children[i];
                 if (currentChild !== null) {
                     totalVectors = [...totalVectors, ...currentChild.getVectors(topLeftFrontVector, bottomRightBackVector)];
+
+                    if (limit !== null && totalVectors.length > limit) {
+                        totalVectors.splice(0, limit);
+                        return totalVectors;
+                    }
                 }
             }
 
             return totalVectors;
+        }
+
+        if (limit !== null && this.values.length > limit) {
+            return this.values.slice(0, limit);
         }
 
         return this.values;
@@ -303,12 +319,12 @@ export class Octree {
 
     /**
      * depth first search
-     * 
      * @param {*} topLeftFrontVector 
      * @param {*} bottomRightBackVector 
+     * @param {*} limit limit the returned array size
      * @returns array
      */
-    getVectorsIterative(topLeftFrontVector, bottomRightBackVector) {
+    getVectorsIterative(topLeftFrontVector, bottomRightBackVector, limit = null) {
         let stack = [];
         stack.push(this);
 
@@ -329,6 +345,11 @@ export class Octree {
                 }
                 else {
                     totalVectors = [...totalVectors, ...currentNode.values];
+
+                    if (limit !== null && totalVectors.length > limit) {
+                        totalVectors.splice(0, limit);
+                        return totalVectors;
+                    }
                 }
             }
         }
