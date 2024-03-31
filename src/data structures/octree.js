@@ -353,6 +353,35 @@ export class Octree {
         return this.values.length;
     }
 
+    countVectorsIterative(limit = null) {
+        let stack = [];
+        stack.push(this);
+
+        let total = 0;
+
+        while (stack.length !== 0) {
+            const currentNode = stack.pop(); // dfs
+            // const currentNode = stack.shift(); // bfs
+
+            total += currentNode.values.length;
+
+            if (limit !== null && total >= limit) {
+                return total;
+            }
+
+            if (currentNode.isSubdivided) {
+                for (let i = 0; i < currentNode.children.length; i++) {
+                    const currentChild = currentNode.children[i];
+                    if (currentChild !== null) {
+                        stack.push(currentChild);
+                    }
+                }
+            }
+        }
+
+        return total;
+    }
+
     delete(vector) {
         if (!this.isPointInCube(vector, this.topLeftFront, this.bottomRightBack)) {
             return;
@@ -392,7 +421,7 @@ export class Octree {
             }
             else {
                 // reorder tree
-                if (this.countVectors() <= this.startingLimit) {
+                if (this.countVectorsIterative(this.startingLimit + 1) <= this.startingLimit) {
                     this.values = this.getAllVectors();
                     this.isSubdivided = false;
 
