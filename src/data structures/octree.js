@@ -18,7 +18,7 @@ export function create3dVector(x, y, z) {
 }
 
 export class Octree {
-    constructor(topLeftFrontVector, bottomRightBackVector, startingLimit = 2, fastMode = false, limitIncreaseAmount = 1, depthLimit = 32) {
+    constructor(topLeftFrontVector, bottomRightBackVector, startingLimit = 2, limitIncreaseAmount = 1, depthLimit = 32) {
         this.values = [];
 
         if (startingLimit < 1) {
@@ -33,7 +33,6 @@ export class Octree {
         this.bottomRightBack = bottomRightBackVector;
         this.children = [null, null, null, null, null, null, null, null];
 
-        this.fastMode = fastMode;
         this.limitIncreaseAmount = limitIncreaseAmount;
         this.depthLimit = depthLimit;
         this.depth = 0;
@@ -142,7 +141,6 @@ export class Octree {
                 this.children[position] = new Octree(this.topLeftFront,
                                                     create3dVector(middleX, middleY, middleZ),
                                                     this.startingLimit + this.limitIncreaseAmount,
-                                                    this.fastMode,
                                                     this.limitIncreaseAmount,
                                                     this.depthLimit);
             }
@@ -150,7 +148,6 @@ export class Octree {
                 this.children[position] = new Octree(create3dVector(middleX, this.topLeftFront.position.y, this.topLeftFront.position.z),
                                                 create3dVector(this.bottomRightBack.position.x, middleY, middleZ),
                                                 this.startingLimit + this.limitIncreaseAmount,
-                                                this.fastMode,
                                                 this.limitIncreaseAmount,
                                                 this.depthLimit);
             }
@@ -158,7 +155,6 @@ export class Octree {
                 this.children[position] = new Octree(create3dVector(middleX, middleY, this.topLeftFront.position.z),
                                                 create3dVector(this.bottomRightBack.position.x, this.bottomRightBack.position.y, middleZ),
                                                 this.startingLimit + this.limitIncreaseAmount,
-                                                this.fastMode,
                                                 this.limitIncreaseAmount,
                                                 this.depthLimit);
             }
@@ -166,7 +162,6 @@ export class Octree {
                 this.children[position] = new Octree(create3dVector(this.topLeftFront.position.x, middleY, this.topLeftFront.position.z),
                                                 create3dVector(middleX, this.bottomRightBack.position.y, middleZ),
                                                 this.startingLimit + this.limitIncreaseAmount,
-                                                this.fastMode,
                                                 this.limitIncreaseAmount,
                                                 this.depthLimit);
             }
@@ -174,7 +169,6 @@ export class Octree {
                 this.children[position] = new Octree(create3dVector(this.topLeftFront.position.x, this.topLeftFront.position.y, middleZ),
                                                 create3dVector(middleX, middleY, this.bottomRightBack.position.z),
                                                 this.startingLimit + this.limitIncreaseAmount,
-                                                this.fastMode,
                                                 this.limitIncreaseAmount,
                                                 this.depthLimit);
             }
@@ -182,14 +176,12 @@ export class Octree {
                 this.children[position] = new Octree(create3dVector(middleX, this.topLeftFront.position.y, middleZ),
                                                 create3dVector(this.bottomRightBack.position.x, middleY, this.bottomRightBack.position.z),
                                                 this.startingLimit + this.limitIncreaseAmount,
-                                                this.fastMode,
                                                 this.limitIncreaseAmount,
                                                 this.depthLimit);
             }
             else if (position === BottomRightBack) {
                 this.children[position] = new Octree(create3dVector(middleX, middleY, middleZ), this.bottomRightBack,
                                                     this.startingLimit + this.limitIncreaseAmount,
-                                                    this.fastMode,
                                                     this.limitIncreaseAmount,
                                                     this.depthLimit);
             }
@@ -197,7 +189,6 @@ export class Octree {
                 this.children[position] = new Octree(create3dVector(this.topLeftFront.position.x, middleY, middleZ),
                                                 create3dVector(middleX, this.bottomRightBack.position.y, this.bottomRightBack.position.z),
                                                 this.startingLimit + this.limitIncreaseAmount,
-                                                this.fastMode,
                                                 this.limitIncreaseAmount,
                                                 this.depthLimit);
             }
@@ -207,15 +198,13 @@ export class Octree {
 
         this.children[position].insert(vector);
 
-        if (!this.fastMode) {
-            // clear out this node as it is now subdivided
-            const previousValues = this.values;
-            this.values = [];
+        // clear out this node as it is now subdivided
+        const previousValues = this.values;
+        this.values = [];
 
-            for (let i = 0; i < previousValues.length; i++) {
-                const currentValue = previousValues[i];
-                this.insert(currentValue);
-            }
+        for (let i = 0; i < previousValues.length; i++) {
+            const currentValue = previousValues[i];
+            this.insert(currentValue);
         }
     }
 
@@ -254,7 +243,7 @@ export class Octree {
      * detect unused child nodes
      * @returns boolean
      */
-    hasChildren() {
+    isNotEmpty() {
         if (this.isSubdivided) {
             for (let i = 0; i < this.children.length; i++) {
                 if (this.children[i] !== null) {
@@ -393,24 +382,22 @@ export class Octree {
         if (currentChild !== null) {
             currentChild.delete(vector);
 
-            if (!this.fastMode) {
-                // delete empty child nodes
-                if (!currentChild.hasChildren()) {
-                    this.children[position] = null;
-                }
+            // delete empty child nodes
+            if (!currentChild.isNotEmpty()) {
+                this.children[position] = null;
+            }
 
-                if (!this.hasChildren()) {
+            if (!this.isNotEmpty()) {
+                this.isSubdivided = false;
+            }
+            else {
+                // reorder tree
+                if (this.countVectors() <= this.startingLimit) {
+                    this.values = this.getAllVectors();
                     this.isSubdivided = false;
-                }
-                else {
-                    // reorder tree
-                    if (this.countVectors() <= this.startingLimit) {
-                        this.values = this.getAllVectors();
-                        this.isSubdivided = false;
 
-                        for (let i = 0; i < this.children.length; i++) {
-                            this.children[i] = null;
-                        }
+                    for (let i = 0; i < this.children.length; i++) {
+                        this.children[i] = null;
                     }
                 }
             }
