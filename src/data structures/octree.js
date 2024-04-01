@@ -124,8 +124,6 @@ export class Octree {
             return;
         }
 
-        this.isSubdivided = true;
-
         const {
             position,
             middleX,
@@ -194,18 +192,22 @@ export class Octree {
             }
 
             this.children[position].depth = this.depth + 1;
+
+            if (!this.isSubdivided) { // newly subdivided nodes will end up here
+                this.isSubdivided = true;
+
+                // clear out this node as it is now subdivided
+                const previousValues = this.values;
+                this.values = [];
+
+                for (let i = 0; i < previousValues.length; i++) {
+                    const currentValue = previousValues[i];
+                    this.insert(currentValue);
+                }
+            }
         }
 
         this.children[position].insert(vector);
-
-        // clear out this node as it is now subdivided
-        const previousValues = this.values;
-        this.values = [];
-
-        for (let i = 0; i < previousValues.length; i++) {
-            const currentValue = previousValues[i];
-            this.insert(currentValue);
-        }
     }
 
     insertIterative(vector) {
@@ -224,8 +226,6 @@ export class Octree {
                     currentNode.values.push(currentValue);
                     break;
                 }
-
-                currentNode.isSubdivided = true;
 
                 const {
                     position,
@@ -295,11 +295,15 @@ export class Octree {
                     }
 
                     currentNode.children[position].depth = currentNode.depth + 1;
-                }
 
-                // clear out this node as it is now subdivided
-                insertingValues = [...insertingValues, ...currentNode.values];
-                currentNode.values = [];
+                    if (!currentNode.isSubdivided) { // newly subdivided nodes will end up here
+                        currentNode.isSubdivided = true;
+
+                        // clear out this node as it is now subdivided
+                        insertingValues = [...insertingValues, ...currentNode.values];
+                        currentNode.values = [];
+                    }
+                }
 
                 currentNode = currentNode.children[position];
             }

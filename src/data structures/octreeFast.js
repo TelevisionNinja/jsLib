@@ -212,8 +212,6 @@ export class OctreeFast {
                 return;
             }
 
-            currentNode.isSubdivided = true;
-
             const {
                 position,
                 middleX,
@@ -282,6 +280,8 @@ export class OctreeFast {
                 }
 
                 currentNode.children[position].depth = currentNode.depth + 1;
+
+                currentNode.isSubdivided = true;
             }
 
             currentNode = currentNode.children[position];
