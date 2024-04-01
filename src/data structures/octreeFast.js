@@ -421,25 +421,4 @@ export class OctreeFast {
             }
         }
     }
-
-    draw() {
-        if (this.isSubdivided) {
-            for (let i = 0; i < this.children.length; i++) {
-                const currentChild = this.children[i];
-                if (currentChild !== null) {
-                    currentChild.draw();
-                }
-            }
-        }
-
-        const {
-            middleX,
-            middleY,
-            middleZ
-        } = this.getMidpoints();
-        const width = this.bottomRightBack.position.x - this.topLeftFront.position.x;
-        const height = this.bottomRightBack.position.y - this.topLeftFront.position.y;
-        const depth = this.bottomRightBack.position.z - this.topLeftFront.position.z;
-        drawBox(middleX, middleY, middleZ, width, height, depth);
-    }
 }
